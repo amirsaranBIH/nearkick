@@ -27,7 +27,7 @@ module.exports = {
       });
     });
   },
-  getbyId: async (id) => {
+  getById: async (id) => {
     return new Promise((resolve, reject) => {
       db.query(
         `SELECT * FROM projects WHERE id = ?`,
@@ -36,13 +36,13 @@ module.exports = {
           if (err) {
             reject(err);
           } else {
-            resolve(result);
+            resolve(result[0]);
           }
         }
       );
     });
   },
-  getbyUserId: async (userId) => {
+  getByUserId: async (userId) => {
     return new Promise((resolve, reject) => {
       db.query(
         `SELECT * FROM projects WHERE userId = ?`,

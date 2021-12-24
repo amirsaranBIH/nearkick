@@ -3,8 +3,10 @@ import { useContext, useState, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
 import AuthUserContext from "../../store/auth-user-context";
+import { HOST } from "../../config";
 
 function Register() {
+  console.log(HOST);
   const authUserContext = useContext(AuthUserContext);
 
   const [redirectToHome, setRedirectToHome] = useState(false);
@@ -18,14 +20,14 @@ function Register() {
     const passwordValue = passwordInputRef.current.value;
 
     axios
-      .post("http://localhost:3001/api/auth/register", {
+      .post("/api/auth/register", {
         email: emailValue,
         password: passwordValue,
       })
       .then((res) => {
         setRedirectToHome(true);
         axios
-          .get("http://localhost:3001/api/auth/user")
+          .get("/api/auth/user")
           .then((res) => {
             if (res.status === 200) {
               authUserContext.setUser(res.data.data);

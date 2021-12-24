@@ -5,8 +5,10 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthUserContextProvider } from "./store/auth-user-context";
 import axios from "axios";
+import { HOST } from "./config";
 
 axios.defaults.withCredentials = true;
+axios.defaults.baseURL = HOST;
 
 ReactDOM.render(
   <AuthUserContextProvider>

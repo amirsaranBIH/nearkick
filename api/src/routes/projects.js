@@ -39,7 +39,7 @@ router.get(
   isAuthorized,
   (req, res) => {
     projectsModel
-      .getbyUserId(req.params.userId)
+      .getByUserId(req.params.userId)
       .then((result) => {
         res.json({ status: "success", data: result });
       })
@@ -49,9 +49,25 @@ router.get(
   }
 );
 
-router.get("/getById/:id", isAuthenticated, (req, res) => {
+router.get("/:id", isAuthenticated, (req, res) => {
   projectsModel
-    .getbyId(req.params.id)
+    .getById(req.params.id)
+    .then((result) => {
+      res.json({ status: "success", data: result });
+    })
+    .catch((err) => {
+      res.status(500).json({ status: "failed", message: err });
+    });
+});
+
+router.put("/:id", isAuthenticated, upload.single("image"), (req, res) => {
+  projectsModel
+    .updateById(
+      req.params.id,
+      req.body.name,
+      req.body.description,
+      req.file.path
+    )
     .then((result) => {
       res.json({ status: "success", data: result });
     })

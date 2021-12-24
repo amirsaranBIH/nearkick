@@ -16,7 +16,7 @@ export function AuthUserContextProvider({ children }) {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/api/auth/user")
+      .get("/api/auth/user")
       .then((res) => {
         if (res.status === 200 && res.data.status === "success") {
           setUser(res.data.data);

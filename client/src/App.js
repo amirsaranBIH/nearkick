@@ -14,14 +14,16 @@ import Home from "./components/Home/Home";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
+import Project from "./components/Project/Project";
 import CreateProject from "./components/Dashboard/components/CreateProject/CreateProject";
+import EditProject from "./components/Dashboard/components/EditProject/EditProject";
 
 function App() {
   const authUserContext = useContext(AuthUserContext);
 
   function logout() {
     axios
-      .get("http://localhost:3001/api/auth/logout")
+      .get("/api/auth/logout")
       .then((res) => {
         console.log(res);
         authUserContext.setUser(null);
@@ -40,6 +42,9 @@ function App() {
           <nav className="navigation-links">
             {authUserContext.isAuthenticated && (
               <ul>
+                <li>
+                  <Link to="/">Projects</Link>
+                </li>
                 <li>
                   <Link to="/dashboard">Dashboard</Link>
                 </li>
@@ -67,6 +72,7 @@ function App() {
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/project/:id" element={<Project />} />
               <Route
                 path="/dashboard"
                 element={
@@ -82,6 +88,16 @@ function App() {
                 element={
                   authUserContext.isAuthenticated ? (
                     <CreateProject />
+                  ) : (
+                    <Navigate to="/login" />
+                  )
+                }
+              />
+              <Route
+                path="/dashboard/edit-project/:id"
+                element={
+                  authUserContext.isAuthenticated ? (
+                    <EditProject />
                   ) : (
                     <Navigate to="/login" />
                   )

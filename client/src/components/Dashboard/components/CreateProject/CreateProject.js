@@ -20,7 +20,7 @@ function CreateProject() {
     formData.append("image", projectImageValue);
 
     axios
-      .post("http://localhost:3001/api/projects/create", formData, {
+      .post("/api/projects/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

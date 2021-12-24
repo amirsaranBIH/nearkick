@@ -18,14 +18,14 @@ function Login() {
     const passwordValue = passwordInputRef.current.value;
 
     axios
-      .post("http://localhost:3001/api/auth/login", {
+      .post("/api/auth/login", {
         email: emailValue,
         password: passwordValue,
       })
       .then((res) => {
         setRedirectToHome(true);
         axios
-          .get("http://localhost:3001/api/auth/user")
+          .get("/api/auth/user")
           .then((res) => {
             if (res.status === 200) {
               authUserContext.setUser(res.data.data);

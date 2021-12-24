@@ -10,19 +10,26 @@ function Dashboard() {
 
   useEffect(() => {
     axios
-      .get(
-        "http://localhost:3001/api/projects/getByUserId/" +
-          authUserContext.user.id
-      )
+      .get("/api/projects/getByUserId/" + authUserContext.user.id)
       .then((res) => {
         setProjects(res.data.data);
-        console.log(projects);
       });
-  }, []);
+  }, [authUserContext.user.id]);
 
   return (
     <div>
       <h1>{authUserContext.user.email}</h1>
+      <div className="projects">
+        <ul>
+          {projects.map((project) => (
+            <li key={project.id}>
+              <Link to={"/dashboard/edit-project/" + project.id}>
+                {project.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
       <Link to="/dashboard/create-project">
         <button type="button">Create Project</button>
       </Link>

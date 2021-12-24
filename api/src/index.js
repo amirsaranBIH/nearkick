@@ -29,6 +29,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/projects", projectsRoutes);
 
+app.use("/uploads", express.static("uploads"));
+
 app.listen(3001, () => {
   console.log("Example app listening on port 3001!");
 });
