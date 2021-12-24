@@ -4,11 +4,20 @@
   "description": "",
   "main": "src/index.js",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
     "express": "^4.17.2",
-    "express-session": "^1.17.2"
+    "express-session": "^1.17.2",
+    "multer": "^1.4.4",
+    "mysql2": "^2.3.3",
+    "uuid": "^8.3.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
   "scripts": {
+    "start": "node src/index.js",
+    "start:dev": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
