@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { AuthUserContextProvider } from "./store/auth-user-context";
+import { WalletContextProvider } from "./store/wallet-context";
 import axios from "axios";
 import { HOST } from "./config";
 
@@ -12,9 +13,11 @@ axios.defaults.baseURL = HOST;
 
 ReactDOM.render(
   <AuthUserContextProvider>
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>
+    <WalletContextProvider>
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </WalletContextProvider>
   </AuthUserContextProvider>,
   document.getElementById("root")
 );

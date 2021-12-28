@@ -18,8 +18,11 @@ import Project from "./components/Project/Project";
 import CreateProject from "./components/Dashboard/components/CreateProject/CreateProject";
 import EditProject from "./components/Dashboard/components/EditProject/EditProject";
 
+import WalletContext from "./store/wallet-context";
+
 function App() {
   const authUserContext = useContext(AuthUserContext);
+  const walletContext = useContext(WalletContext);
 
   function logout() {
     axios
@@ -34,35 +37,56 @@ function App() {
       });
   }
 
+  function connectWalletHandler() {
+    walletContext.wallet.requestSignIn("second.amirsaran2.testnet", "Nearkick");
+  }
+
+  function disconnectWalletHandler() {
+    walletContext.wallet.signOut();
+    walletContext.setIsSignedIn(false);
+  }
+
   return (
     <Router>
       <div>
         <header className="header">
           <h1>Nearkick</h1>
           <nav className="navigation-links">
-            {authUserContext.isAuthenticated && (
-              <ul>
-                <li>
-                  <Link to="/">Projects</Link>
-                </li>
+            <ul>
+              <li>
+                <Link to="/">Projects</Link>
+              </li>
+              {authUserContext.isAuthenticated && (
                 <li>
                   <Link to="/dashboard">Dashboard</Link>
                 </li>
+              )}
+              {authUserContext.isAuthenticated && (
                 <li className="a" onClick={logout}>
                   Logout
                 </li>
-              </ul>
-            )}
-            {!authUserContext.isAuthenticated && (
-              <ul>
+              )}
+              {!authUserContext.isAuthenticated && (
                 <li>
                   <Link to="/register">Register</Link>
                 </li>
+              )}
+              {!authUserContext.isAuthenticated && (
                 <li>
                   <Link to="/login">Login</Link>
                 </li>
-              </ul>
-            )}
+              )}
+              {walletContext.wallet && walletContext.isSignedIn && (
+                <li className="wallet-button" onClick={disconnectWalletHandler}>
+                  Disconnect Wallet
+                </li>
+              )}
+              {walletContext.wallet && !walletContext.isSignedIn && (
+                <li className="wallet-button" onClick={connectWalletHandler}>
+                  Connect Wallet
+                </li>
+              )}
+            </ul>
           </nav>
         </header>
         <main>
