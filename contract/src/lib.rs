@@ -1,5 +1,5 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::{env, near_bindgen, AccountId, Promise};
+use near_sdk::{env, near_bindgen, AccountId, Promise, PanicOnDefault};
 use near_sdk::collections::{LookupMap, UnorderedMap};
 use near_sdk::serde::{Deserialize, Serialize};
 
@@ -32,7 +32,8 @@ pub enum SupporterLevel {
     Supreme,
 }
 
-#[derive(BorshDeserialize, BorshSerialize, Debug)]
+#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, Debug)]
+#[serde(crate = "near_sdk::serde")]
 pub struct Supporter {
     pub level: SupporterLevel,
     pub used_verification_code: bool,
@@ -40,6 +41,9 @@ pub struct Supporter {
 
 #[derive(BorshDeserialize, BorshSerialize, Debug)]
 pub struct Project {
+    pub name: String,
+    pub description: String,
+    pub image: String,
     pub owner: AccountId,
     pub supporters: UnorderedMap<AccountId, Supporter>,
     pub balance: u128,
@@ -51,10 +55,11 @@ pub struct Project {
 }
 
 #[near_bindgen]
-#[derive(BorshDeserialize, BorshSerialize)]
+#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, PanicOnDefault)]
+#[serde(crate = "near_sdk::serde")]
 pub struct Nearkick {
     current_id: u64,
-    projects: LookupMap<u64, Project>,
+    projects: UnorderedMap<u64, Project>,
 }
 
 #[near_bindgen]
@@ -63,13 +68,16 @@ impl Nearkick {
     pub fn new() -> Self {
         Self {
             current_id: 0,
-            projects: LookupMap::new(b"p".to_vec()),
+            projects: UnorderedMap::new(b"p".to_vec()),
         }
     }
 
-    pub fn add_project(&mut self, goal: u128, plan: SupporterPlans, end_time: u64) -> u64 {
+    pub fn add_project(&mut self, name: String, description: String, image: String, goal: u128, plan: SupporterPlans, end_time: u64) -> u64 {
         self.current_id += 1;
         let mut project = Project {
+            name,
+            description,
+            image,
             owner: env::signer_account_id(),
             supporters: UnorderedMap::new(b"s".to_vec()),
             balance: 0,
@@ -142,6 +150,18 @@ impl Nearkick {
         true
     }
 
+    // pub fn get_all_projects(&self) -> Vec<Project> {
+    //     let mut projects = Vec::new();
+    //     for project in self.projects.iter() {
+    //         projects.push(project.1);
+    //     }
+    //     projects
+    // }
+
+    pub fn get_project(&self, project_id: u64) -> Project {
+        self.projects.get(&project_id).unwrap()
+    }
+
     pub fn cancel_project(&mut self, project_id: u64) {
         let mut project = self.projects.get(&project_id).unwrap();
         project.status = ProjectStatus::Cancelled;
@@ -168,26 +188,39 @@ impl Nearkick {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use near_sdk::test_utils::{VMContextBuilder};
+    use near_sdk::{testing_env, AccountId};
+
+    fn get_context(predecessor: AccountId) -> VMContextBuilder {
+        let mut builder = VMContextBuilder::new();
+        builder.predecessor_account_id(predecessor);
+        builder
+    }
 
     #[test]
     fn test_add_project() {
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, SupporterPlans::OneTime, 100);
+        let project_id = nearkick.add_project("".to_string(), "".to_string(), "".to_string(), 1000, SupporterPlans::OneTime, 100);
         assert_eq!(nearkick.projects.get(&project_id).unwrap().goal, 1000);
     }
 
     #[test]
     fn test_add_supporter_to_project() {
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, SupporterPlans::OneTime, 100);
-        nearkick.add_supporter_to_project(project_id, AccountId::new_unchecked("supporter".to_string()), SupporterLevel::Starter);
+
+        let alice = AccountId::new_unchecked("alice.testnet".to_string());
+        let context = get_context(alice);
+        testing_env!(context.build());
+
+        let project_id = nearkick.add_project("".to_string(), "".to_string(), "".to_string(), 1000, SupporterPlans::OneTime, 100);
+        nearkick.add_supporter_to_project(project_id, env::signer_account_id(), SupporterLevel::Starter);
         assert_eq!(nearkick.projects.get(&project_id).unwrap().balance, 0);
     }
 
     #[test]
     fn test_verify_supporter_on_project() {
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, SupporterPlans::OneTime, 100);
+        let project_id = nearkick.add_project("".to_string(), "".to_string(), "".to_string(), 1000, SupporterPlans::OneTime, 100);
         nearkick.add_supporter_to_project(project_id, AccountId::new_unchecked("supporter".to_string()), SupporterLevel::Starter);
         assert_eq!(nearkick.verify_supporter_on_project(project_id, AccountId::new_unchecked("supporter".to_string())), true);
     }
@@ -195,8 +228,24 @@ mod tests {
     #[test]
     fn test_cancel_project() {
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, SupporterPlans::OneTime, 100);
+        let project_id = nearkick.add_project("".to_string(), "".to_string(), "".to_string(), 1000, SupporterPlans::OneTime, 100);
         nearkick.cancel_project(project_id);
         assert_eq!(nearkick.projects.get(&project_id).unwrap().status, ProjectStatus::Cancelled);
+    }
+
+    // #[test]
+    // fn test_get_all_projects() {
+    //     let mut nearkick = Nearkick::new();
+    //     nearkick.add_project("".to_string(), "".to_string(), "".to_string(), 1000, SupporterPlans::OneTime, 100);
+    //     let projects = nearkick.get_all_projects();
+    //     assert_eq!(projects.len(), 1);
+    // }
+
+    #[test]
+    fn test_get_project() {
+        let mut nearkick = Nearkick::new();
+        let project_id = nearkick.add_project("".to_string(), "".to_string(), "".to_string(), 1000, SupporterPlans::OneTime, 100);
+        let project = nearkick.get_project(project_id);
+        assert_eq!(project.goal, 1000);
     }
 }
