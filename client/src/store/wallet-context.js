@@ -28,16 +28,11 @@ export function WalletContextProvider({ children }) {
     const near = await nearAPI.connect(config);
     const wallet = new nearAPI.WalletConnection(near, "nearkick");
     const account = wallet.account();
-    const contract = new nearAPI.Contract(
-      account, // the account object that is connecting
-      "second.amirsaran2.testnet",
-      {
-        // name of contract you're connecting to
-        viewMethods: ["get_num"], // view methods do not change state but usually return a value
-        changeMethods: ["increment", "decrement", "reset"], // change methods modify state
-        sender: account, // account object to initialize and sign transactions.
-      }
-    );
+    const contract = new nearAPI.Contract(account, "amirsaran2.testnet", {
+      viewMethods: ["get_project", "get_all_projects"],
+      changeMethods: ["add_project"],
+      sender: account,
+    });
 
     setWallet(wallet);
     setContract(contract);

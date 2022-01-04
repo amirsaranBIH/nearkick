@@ -7,4 +7,44 @@
 body {
   font-family: "Roboto", sans-serif;
   font-size: 16px;
+  background-color: #ccc;
+}
+
+.btn {
+  padding: 0.75em 1.25em;
+  background-color: rgb(218, 139, 22);
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+  border: 0;
+}
+
+.h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.form-group {
+  margin-bottom: 1em;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.5em 0.75em;
+}
+
+.form-group label {
+  margin-bottom: 0.25em;
+  display: inline-block;
+}
+
+.form-group textarea {
+  max-width: 100%;
+  resize: vertical;
+  height: 50px;
+  min-height: 50px;
+  max-height: 300px;
 }

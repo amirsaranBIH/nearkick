@@ -7,28 +7,59 @@
   justify-content: space-between;
 }
 
-.header .navigation-links ul {
+.header .navigation-links > ul {
   list-style-type: none;
   display: flex;
   align-items: center;
 }
 
-.header .navigation-links ul li + li {
+.header .navigation-links > ul > li + li {
   margin-left: 3em;
 }
 
-.header .navigation-links ul li a,
-.header .navigation-links ul li.a {
+.header .navigation-links > ul > li a,
+.header .navigation-links > ul > li.a {
   color: black;
   text-decoration: none;
   cursor: pointer;
 }
 
 .header .wallet-button {
+  position: relative;
+}
+
+.header .wallet-button span {
   padding: 0.75em 1.25em;
   background-color: rgb(218, 139, 22);
   border-radius: 3px;
   color: white;
   cursor: pointer;
-  text-transform: uppercase;
+}
+
+.wallet-button-dropdown {
+  list-style: none;
+  position: absolute;
+  top: 200%;
+  right: 0;
+  background-color: #fff;
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+
+.wallet-button-dropdown li {
+  padding: 0.75em 1.25em;
+  cursor: pointer;
+}
+
+.wallet-button-dropdown li + li {
+  border-top: 1px solid #ccc;
+}
+
+.main {
+  max-width: 1200px;
+  min-height: calc(100vh - 70px);
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 2em;
 }

@@ -1,38 +1,40 @@
 import "./CreateProject.css";
-import { useRef } from "react";
-import axios from "axios";
+import { useRef, useContext } from "react";
+import WalletContext from "../../../../store/wallet-context";
 
 function CreateProject() {
+  const walletContext = useContext(WalletContext);
+
   const projectNameInputRef = useRef();
   const projectDescriptionInputRef = useRef();
-  const projectImageInputRef = useRef();
+  const projectGoalInputRef = useRef();
+  const projectPlanInputRef = useRef("OneTime");
 
   function onSubmitHandler(e) {
     e.preventDefault();
 
     const projectNameValue = projectNameInputRef.current.value;
     const projectDescriptionValue = projectDescriptionInputRef.current.value;
-    const projectImageValue = projectImageInputRef.current.files[0];
+    const projectGoalValue = projectGoalInputRef.current.value;
+    const projectPlanValue = projectPlanInputRef.current.value;
 
-    const formData = new FormData();
-    formData.append("name", projectNameValue);
-    formData.append("description", projectDescriptionValue);
-    formData.append("image", projectImageValue);
-
-    axios
-      .post("/api/projects/create", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    walletContext.contract
+      .add_project({
+        goal: parseFloat(projectGoalValue),
+        name: projectNameValue,
+        description: projectDescriptionValue,
+        plan: projectPlanValue,
+        end_time: 86400000000000, // one day in nanosec
       })
-      .then((res) => {})
-      .catch((err) => {});
+      .then((res) => {
+        console.log(res);
+      });
   }
 
   return (
     <div>
-      <h1>Create Project</h1>
-      <form onSubmit={onSubmitHandler} encType="multipart/form-data">
+      <h1 className="h1">Create Project</h1>
+      <form onSubmit={onSubmitHandler}>
         <div className="form-group">
           <label htmlFor="name">Name</label>
           <input type="text" id="name" ref={projectNameInputRef} />
@@ -45,10 +47,19 @@ function CreateProject() {
           ></textarea>
         </div>
         <div className="form-group">
-          <label htmlFor="image">Image</label>
-          <input type="file" id="image" ref={projectImageInputRef} />
+          <label htmlFor="goal">Goal</label>
+          <input type="number" id="goal" ref={projectGoalInputRef} />
         </div>
-        <button type="submit">Create</button>
+        <div className="form-group">
+          <label htmlFor="plan">Plan</label>
+          <select id="plan" ref={projectPlanInputRef}>
+            <option value="OneTime">One Time</option>
+            <option value="Recurring">Recurring</option>
+          </select>
+        </div>
+        <button className="btn" type="submit">
+          Create Project
+        </button>
       </form>
     </div>
   );

@@ -1,21 +1,23 @@
 import "./Project.css";
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
-import { HOST } from "../../config";
 import WalletContext from "../../store/wallet-context";
 
 function Project() {
   const walletContext = useContext(WalletContext);
 
   const { id } = useParams();
-  const [project, setProject] = useState([]);
+  const [project, setProject] = useState(null);
 
   useEffect(() => {
-    axios.get("/api/projects/" + id).then((res) => {
-      setProject(res.data.data);
-    });
-  }, [id]);
+    if (walletContext.wallet && walletContext.contract) {
+      walletContext.contract
+        .get_project({ project_id: parseInt(id, 10) })
+        .then((res) => {
+          setProject(res);
+        });
+    }
+  }, [walletContext.contract, walletContext.wallet]);
 
   function supportProject() {
     if (!walletContext.isSignedIn) {
@@ -30,6 +32,10 @@ function Project() {
     }
   }
 
+  function calculateEndDate(endDateInNanoSec) {
+    return new Date(endDateInNanoSec / 1000000).toISOString();
+  }
+
   if (!project) {
     return <div>Loading...</div>;
   }
@@ -38,9 +44,16 @@ function Project() {
     <div>
       <h1>{project.name}</h1>
       <p>{project.description}</p>
-      <img src={HOST + "/" + project.image} alt={project.name} />
-      <button type="button" onClick={supportProject}>
-        Support
+      <hr />
+      <p>End Date: {calculateEndDate(project.end_time)}</p>
+      <p>Owner: {project.owner}</p>
+      <p>Goal: {project.goal}</p>
+      <p>Plan: {project.plan}</p>
+      <p>Status: {project.status}</p>
+      <p>Supporters: {Object.keys(project.supporters).length}</p>
+      <hr />
+      <button className="btn" type="button" onClick={supportProject}>
+        Become a Supporter
       </button>
     </div>
   );
