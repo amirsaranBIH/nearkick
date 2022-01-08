@@ -1,0 +1,19 @@
+.project-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2em;
+}
+
+.project-details-second {
+  min-width: max-content;
+  margin-left: 1em;
+}
+
+.project-supporters {
+  list-style-type: none;
+  padding: 1em;
+}
+
+.project-description {
+  white-space: pre-line;
+}

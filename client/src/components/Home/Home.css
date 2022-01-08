@@ -3,11 +3,30 @@
   margin: 1em 0;
 }
 
-.home-projects ul li {
-  border-left: 3px solid #ccc;
+.home-projects ul li .home-project {
+  border-left: 5px solid rgb(218, 139, 22);
   padding: 0.75em;
+}
+
+.home-projects ul li .home-project:hover {
+  background-color: #f1f1f1;
 }
 
 .home-projects ul li + li {
   margin-top: 1em;
+}
+
+.home-project-details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.home-project-details-second {
+  min-width: max-content;
+}
+
+.search-projects {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

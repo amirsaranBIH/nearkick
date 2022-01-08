@@ -19,8 +19,23 @@ body {
   border: 0;
 }
 
+p {
+  line-height: 1.4em;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
 .h1 {
   font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.h2 {
+  font-size: 1.5em;
   font-weight: bold;
   margin-bottom: 0.5em;
 }
@@ -44,7 +59,7 @@ body {
 .form-group textarea {
   max-width: 100%;
   resize: vertical;
-  height: 50px;
-  min-height: 50px;
+  height: 100px;
+  min-height: 100px;
   max-height: 300px;
 }

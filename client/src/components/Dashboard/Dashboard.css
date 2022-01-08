@@ -11,3 +11,18 @@
 .dashboard-projects ul li + li {
   margin-top: 1em;
 }
+
+.dashboard-project-details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dashboard-project-details-second {
+  min-width: max-content;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

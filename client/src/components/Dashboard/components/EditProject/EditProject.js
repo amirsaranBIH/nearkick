@@ -23,14 +23,21 @@ function EditProject() {
   function onSubmitHandler(e) {
     e.preventDefault();
 
+    // const newDate =
+    //   (project.end_time / 1000000 - new Date().valueOf()) * 1000000;
+
     walletContext.contract
       .update_project({
-        id: parseInt(id, 10),
+        project_id: parseInt(id, 10),
         goal: parseFloat(project.goal),
         name: project.name,
         description: project.description,
         plan: project.plan,
-        end_time: 86400000000000, // one day in nanosec
+        basic_supporter_amount: parseFloat(project.level_amounts.Basic),
+        intermediate_supporter_amount: parseFloat(
+          project.level_amounts.Intermediate
+        ),
+        advanced_supporter_amount: parseFloat(project.level_amounts.Advanced),
       })
       .then((res) => {
         console.log(res);
@@ -51,6 +58,45 @@ function EditProject() {
 
   function onPlanChangeHandler(event) {
     setProject({ ...project, plan: event.target.value });
+  }
+
+  function onBasicAmountChangeHandler(event) {
+    setProject({
+      ...project,
+      level_amounts: {
+        ...project.level_amounts,
+        Basic: event.target.value,
+      },
+    });
+  }
+
+  function onIntermediateAmountChangeHandler(event) {
+    setProject({
+      ...project,
+      level_amounts: {
+        ...project.level_amounts,
+        Intermediate: event.target.value,
+      },
+    });
+  }
+
+  function onAdvancedAmountChangeHandler(event) {
+    setProject({
+      ...project,
+      level_amounts: {
+        ...project.level_amounts,
+        Advanced: event.target.value,
+      },
+    });
+  }
+
+  function onEndDateChangeHandler(event) {
+    const newDate = new Date(event.target.value).valueOf() * 1000000;
+    setProject({ ...project, end_time: newDate });
+  }
+
+  function calculateEndDate(endDateInNanoSec) {
+    return new Date(endDateInNanoSec / 1000000).toISOString().split(".")[0];
   }
 
   if (!project) {
@@ -93,6 +139,46 @@ function EditProject() {
             <option value="OneTime">One Time</option>
             <option value="Recurring">Recurring</option>
           </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="endDate">End Date</label>
+          <input
+            type="datetime-local"
+            id="endDate"
+            disabled
+            value={calculateEndDate(project.end_time)}
+            onChange={onEndDateChangeHandler}
+          />
+        </div>
+        <div>
+          <h2 className="h2">Supporter Level Amounts</h2>
+          <div className="form-group">
+            <label htmlFor="basic-level">Basic Level</label>
+            <input
+              type="number"
+              id="basic-level"
+              value={project.level_amounts.Basic}
+              onInput={onBasicAmountChangeHandler}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="intermediate-level">Intermediate Level</label>
+            <input
+              type="number"
+              id="intermediate-level"
+              value={project.level_amounts.Intermediate}
+              onInput={onIntermediateAmountChangeHandler}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="advanced-level">Advanced Level</label>
+            <input
+              type="number"
+              id="advanced-level"
+              value={project.level_amounts.Advanced}
+              onInput={onAdvancedAmountChangeHandler}
+            />
+          </div>
         </div>
         <button className="btn" type="submit">
           Update Project

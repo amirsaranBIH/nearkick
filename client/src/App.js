@@ -39,10 +39,6 @@ function App() {
     setShowDropdown(!showDropdown);
   }
 
-  if (!walletContext.wallet || !walletContext.contract) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <Router>
       <div>
@@ -61,7 +57,9 @@ function App() {
                   {showDropdown && (
                     <ul className="wallet-button-dropdown">
                       <li>
-                        <Link to="/dashboard">Dashboard</Link>
+                        <Link onClick={toggleDropdown} to="/dashboard">
+                          Dashboard
+                        </Link>
                       </li>
                       <li onClick={disconnectWalletHandler}>Logout</li>
                     </ul>

@@ -9,6 +9,10 @@ function CreateProject() {
   const projectDescriptionInputRef = useRef();
   const projectGoalInputRef = useRef();
   const projectPlanInputRef = useRef("OneTime");
+  const projectEndDateInputRef = useRef();
+  const projectBasicAmountInputRef = useRef();
+  const projectIntermediateAmountInputRef = useRef();
+  const projectAdvancedAmountInputRef = useRef();
 
   function onSubmitHandler(e) {
     e.preventDefault();
@@ -17,15 +21,38 @@ function CreateProject() {
     const projectDescriptionValue = projectDescriptionInputRef.current.value;
     const projectGoalValue = projectGoalInputRef.current.value;
     const projectPlanValue = projectPlanInputRef.current.value;
+    const projectEndDateValue = projectEndDateInputRef.current.value;
+    const projectBasicAmountValue = projectBasicAmountInputRef.current.value;
+    const projectIntermediateAmountValue =
+      projectIntermediateAmountInputRef.current.value;
+    const projectAdvancedAmountValue =
+      projectAdvancedAmountInputRef.current.value;
+
+    const newDate =
+      (new Date(projectEndDateValue).valueOf() - new Date().valueOf()) *
+      1000000;
+
+    if (newDate < 0) {
+      alert("End date must be in the future");
+      return;
+    }
 
     walletContext.contract
-      .add_project({
-        goal: parseFloat(projectGoalValue),
-        name: projectNameValue,
-        description: projectDescriptionValue,
-        plan: projectPlanValue,
-        end_time: 86400000000000, // one day in nanosec
-      })
+      .add_project(
+        {
+          goal: parseFloat(projectGoalValue),
+          name: projectNameValue,
+          description: projectDescriptionValue,
+          plan: projectPlanValue,
+          end_time: newDate,
+          basic_supporter_amount: parseFloat(projectBasicAmountValue),
+          intermediate_supporter_amount: parseFloat(
+            projectIntermediateAmountValue
+          ),
+          advanced_supporter_amount: parseFloat(projectAdvancedAmountValue),
+        },
+        300000000000000
+      )
       .then((res) => {
         console.log(res);
       });
@@ -56,6 +83,41 @@ function CreateProject() {
             <option value="OneTime">One Time</option>
             <option value="Recurring">Recurring</option>
           </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="endDate">End Date</label>
+          <input
+            type="datetime-local"
+            id="endDate"
+            ref={projectEndDateInputRef}
+          />
+        </div>
+        <div>
+          <h2 className="h2">Supporter Level Amounts</h2>
+          <div className="form-group">
+            <label htmlFor="basic-level">Basic Level</label>
+            <input
+              type="number"
+              id="basic-level"
+              ref={projectBasicAmountInputRef}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="intermediate-level">Intermediate Level</label>
+            <input
+              type="number"
+              id="intermediate-level"
+              ref={projectIntermediateAmountInputRef}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="advanced-level">Advanced Level</label>
+            <input
+              type="number"
+              id="advanced-level"
+              ref={projectAdvancedAmountInputRef}
+            />
+          </div>
         </div>
         <button className="btn" type="submit">
           Create Project
