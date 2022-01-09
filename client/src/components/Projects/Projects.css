@@ -1,27 +1,27 @@
-.home-projects ul {
+.all-projects ul {
   list-style-type: none;
   margin: 1em 0;
 }
 
-.home-projects ul li .home-project {
+.all-projects ul li .project {
   border-left: 5px solid rgb(218, 139, 22);
   padding: 0.75em;
 }
 
-.home-projects ul li .home-project:hover {
+.all-projects ul li .project:hover {
   background-color: #f1f1f1;
 }
 
-.home-projects ul li + li {
+.all-projects ul li + li {
   margin-top: 1em;
 }
 
-.home-project-details {
+.all-project-details {
   display: flex;
   justify-content: space-between;
 }
 
-.home-project-details-second {
+.all-project-details-second {
   min-width: max-content;
 }
 
@@ -29,12 +29,4 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.cta {
-  text-align: center;
-}
-
-.cta p {
-  margin: 1em 0;
 }

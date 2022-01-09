@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 
 import Home from "./components/Home/Home";
+import Projects from "./components/Projects/Projects";
+import About from "./components/About/About";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Project from "./components/Project/Project";
 import CreateProject from "./components/Dashboard/components/CreateProject/CreateProject";
@@ -43,11 +45,16 @@ function App() {
     <Router>
       <div>
         <header className="header">
-          <h1>NEARKICK</h1>
+          <h1>
+            <Link to="/">NEARKICK</Link>
+          </h1>
           <nav className="navigation-links">
             <ul>
               <li>
-                <Link to="/">Projects</Link>
+                <Link to="/projects">Projects</Link>
+              </li>
+              <li>
+                <Link to="/about">About</Link>
               </li>
               {walletContext.wallet && walletContext.isSignedIn && (
                 <li className="wallet-button">
@@ -77,6 +84,8 @@ function App() {
         <main className="main">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/about" element={<About />} />
             <Route path="/project/:id" element={<Project />} />
             <Route
               path="/dashboard"
