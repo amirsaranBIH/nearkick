@@ -72,7 +72,10 @@ function Projects() {
                       </p>
                       <p>
                         <b>Progress: </b>
-                        {Math.ceil(project.balance / project.goal) * 100}%
+                        {Math.ceil((project.balance / project.goal) * 100)}%
+                      </p>
+                      <p>
+                        <b>Status:</b> {project.status}
                       </p>
                     </div>
                   </div>

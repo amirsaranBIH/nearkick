@@ -15,6 +15,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import Project from "./components/Project/Project";
 import CreateProject from "./components/Dashboard/components/CreateProject/CreateProject";
 import EditProject from "./components/Dashboard/components/EditProject/EditProject";
+import { CONTRACT_ADDRESS } from "./config";
 
 import WalletContext from "./store/wallet-context";
 
@@ -25,7 +26,7 @@ function App() {
 
   function connectWalletHandler() {
     walletContext.wallet
-      .requestSignIn("second.amirsaran2.testnet", "Nearkick")
+      .requestSignIn(CONTRACT_ADDRESS, "Nearkick")
       .then((res) => {
         console.log(res);
       });

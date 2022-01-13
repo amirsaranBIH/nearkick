@@ -2,6 +2,7 @@ import "./Project.css";
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import WalletContext from "../../store/wallet-context";
+import { CONTRACT_ADDRESS } from "../../config";
 
 function Project() {
   const walletContext = useContext(WalletContext);
@@ -19,14 +20,11 @@ function Project() {
           console.log(res);
         });
     }
-  }, [walletContext.contract, walletContext.wallet]);
+  }, [walletContext.contract, walletContext.wallet, id]);
 
   function supportProject() {
     if (!walletContext.isSignedIn) {
-      walletContext.wallet.requestSignIn(
-        "second.amirsaran2.testnet",
-        "Nearkick"
-      );
+      walletContext.wallet.requestSignIn(CONTRACT_ADDRESS, "Nearkick");
     } else {
       walletContext.contract
         .add_supporter_to_project(

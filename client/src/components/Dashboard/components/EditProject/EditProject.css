@@ -1,0 +1,36 @@
+.edit-project .buttons button + button {
+  margin-left: 10px;
+}
+
+.edit-project .heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.edit-project .heading h1 {
+  margin-right: 0.5em;
+  margin-bottom: 0;
+}
+
+.edit-project .heading .project-status {
+  color: white;
+  border-radius: 20px;
+  padding: 0.1em 0.5em;
+}
+
+.project-status.Funding {
+  background-color: blue;
+}
+
+.project-status.Funded {
+  background-color: green;
+}
+
+.project-status.Cancelled {
+  background-color: red;
+}
+
+.project-status.Unfulfilled {
+  background-color: brown;
+}

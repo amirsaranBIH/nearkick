@@ -19,6 +19,10 @@ body {
   border: 0;
 }
 
+.btn--red {
+  background-color: rgb(218, 35, 22);
+}
+
 p {
   line-height: 1.4em;
 }

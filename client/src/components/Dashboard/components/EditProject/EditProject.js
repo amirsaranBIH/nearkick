@@ -18,7 +18,7 @@ function EditProject() {
           setProject(res);
         });
     }
-  }, [walletContext.contract, walletContext.wallet]);
+  }, [walletContext.contract, walletContext.wallet, id]);
 
   function onSubmitHandler(e) {
     e.preventDefault();
@@ -95,6 +95,14 @@ function EditProject() {
     setProject({ ...project, end_time: newDate });
   }
 
+  function onCancelProjectHandler() {
+    walletContext.contract
+      .cancel_project({ project_id: parseInt(id, 10) })
+      .then((res) => {
+        console.log(res);
+      });
+  }
+
   function calculateEndDate(endDateInNanoSec) {
     return new Date(endDateInNanoSec / 1000000).toISOString().split(".")[0];
   }
@@ -104,8 +112,13 @@ function EditProject() {
   }
 
   return (
-    <div>
-      <h1 className="h1">Update Project</h1>
+    <div className="edit-project">
+      <div className="heading">
+        <h1 className="h1">Update Project</h1>
+        <span className={`project-status ${project.status}`}>
+          {project.status}
+        </span>
+      </div>
       <form onSubmit={onSubmitHandler}>
         <div className="form-group">
           <label htmlFor="name">Name</label>
@@ -180,9 +193,20 @@ function EditProject() {
             />
           </div>
         </div>
-        <button className="btn" type="submit">
-          Update Project
-        </button>
+        <div className="buttons">
+          <button className="btn" type="submit">
+            Update Project
+          </button>
+          {project.status === "Funding" && (
+            <button
+              className="btn btn--red"
+              type="button"
+              onClick={onCancelProjectHandler}
+            >
+              Cancel Project
+            </button>
+          )}
+        </div>
       </form>
     </div>
   );

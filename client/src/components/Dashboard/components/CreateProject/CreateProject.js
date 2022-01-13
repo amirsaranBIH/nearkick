@@ -32,6 +32,11 @@ function CreateProject() {
       (new Date(projectEndDateValue).valueOf() - new Date().valueOf()) *
       1000000;
 
+    const date = new Date(projectEndDateValue);
+    const cadence = `0 ${date.getMinutes()} ${
+      date.getHours() - 1
+    } ${date.getDate()} ${date.getMonth() + 1} *`;
+
     if (newDate < 0) {
       alert("End date must be in the future");
       return;
@@ -45,6 +50,7 @@ function CreateProject() {
           description: projectDescriptionValue,
           plan: projectPlanValue,
           end_time: newDate,
+          cadence,
           basic_supporter_amount: parseFloat(projectBasicAmountValue),
           intermediate_supporter_amount: parseFloat(
             projectIntermediateAmountValue

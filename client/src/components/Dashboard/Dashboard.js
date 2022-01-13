@@ -10,10 +10,14 @@ function Dashboard() {
 
   useEffect(() => {
     if (walletContext.wallet && walletContext.contract) {
-      walletContext.contract.get_all_projects().then((res) => {
-        console.log(res);
-        setProjects(res);
-      });
+      walletContext.contract
+        .get_all_projects_by_owner({
+          owner: walletContext.wallet.getAccountId(),
+        })
+        .then((res) => {
+          console.log(res);
+          setProjects(res);
+        });
     }
   }, [walletContext.contract, walletContext.wallet]);
 
@@ -33,7 +37,7 @@ function Dashboard() {
     <div>
       <div className="dashboard-header">
         <div>
-          <h1>{walletContext.wallet.getAccountId()}</h1>
+          <h1>Logged in as {walletContext.wallet.getAccountId()}</h1>
         </div>
         <div>
           <Link to="/dashboard/create-project">
@@ -64,6 +68,9 @@ function Dashboard() {
                       <p>
                         <b>Progress: </b>
                         {Math.ceil(project.balance / project.goal) * 100}%
+                      </p>
+                      <p>
+                        <b>Status:</b> {project.status}
                       </p>
                     </div>
                   </div>

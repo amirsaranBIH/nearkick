@@ -5,34 +5,43 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { WalletContextProvider } from "./store/wallet-context";
 import * as nearAPI from "near-api-js";
+import {
+  NETWORK_ID,
+  CONTRACT_ADDRESS,
+  NODE_URL,
+  WALLET_URL,
+  HELPER_URL,
+  EXPLORER_URL,
+} from "./config";
 
 async function initWallet() {
   const config = {
-    networkId: "testnet",
+    networkId: NETWORK_ID,
     keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore(),
-    nodeUrl: "https://rpc.testnet.near.org",
-    walletUrl: "https://wallet.testnet.near.org",
-    helperUrl: "https://helper.testnet.near.org",
-    explorerUrl: "https://explorer.testnet.near.org",
+    nodeUrl: NODE_URL,
+    walletUrl: WALLET_URL,
+    helperUrl: HELPER_URL,
+    explorerUrl: EXPLORER_URL,
   };
 
   const near = await nearAPI.connect(config);
   const wallet = new nearAPI.WalletConnection(near, "nearkick");
   const account = wallet.account();
-  const contract = new nearAPI.Contract(
-    account,
-    "dev-1641636391860-77373132231441",
-    {
-      viewMethods: ["get_project", "get_all_projects"],
-      changeMethods: [
-        "add_project",
-        "update_project",
-        "add_supporter_to_project",
-        "cancel_project",
-      ],
-      sender: account,
-    }
-  );
+  const contract = new nearAPI.Contract(account, CONTRACT_ADDRESS, {
+    viewMethods: [
+      "get_project",
+      "get_all_projects",
+      "get_all_projects_by_owner",
+    ],
+    changeMethods: [
+      "add_project",
+      "update_project",
+      "add_supporter_to_project",
+      "cancel_project",
+      "verify_supporter_on_project",
+    ],
+    sender: account,
+  });
 
   return { wallet, contract };
 }
