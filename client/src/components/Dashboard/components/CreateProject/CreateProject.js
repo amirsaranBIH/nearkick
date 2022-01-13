@@ -1,18 +1,20 @@
 import "./CreateProject.css";
-import { useRef, useContext } from "react";
+import { useState, useRef, useContext } from "react";
 import WalletContext from "../../../../store/wallet-context";
 
 function CreateProject() {
   const walletContext = useContext(WalletContext);
 
-  const projectNameInputRef = useRef();
-  const projectDescriptionInputRef = useRef();
-  const projectGoalInputRef = useRef();
+  const [submitted, setSubmitted] = useState(false);
+
+  const projectNameInputRef = useRef("");
+  const projectDescriptionInputRef = useRef("");
+  const projectGoalInputRef = useRef("");
   const projectPlanInputRef = useRef("OneTime");
-  const projectEndDateInputRef = useRef();
-  const projectBasicAmountInputRef = useRef();
-  const projectIntermediateAmountInputRef = useRef();
-  const projectAdvancedAmountInputRef = useRef();
+  const projectEndDateInputRef = useRef("");
+  const projectBasicAmountInputRef = useRef("");
+  const projectIntermediateAmountInputRef = useRef("");
+  const projectAdvancedAmountInputRef = useRef("");
 
   function onSubmitHandler(e) {
     e.preventDefault();
@@ -31,16 +33,17 @@ function CreateProject() {
     const newDate =
       (new Date(projectEndDateValue).valueOf() - new Date().valueOf()) *
       1000000;
-
-    const date = new Date(projectEndDateValue);
-    const cadence = `0 ${date.getMinutes()} ${
-      date.getHours() - 1
-    } ${date.getDate()} ${date.getMonth() + 1} *`;
+    const date = new Date(new Date(projectEndDateValue).valueOf() - 3600000);
+    const cadence = `0 ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${
+      date.getMonth() + 1
+    } *`;
 
     if (newDate < 0) {
       alert("End date must be in the future");
       return;
     }
+
+    setSubmitted(true);
 
     walletContext.contract
       .add_project(
@@ -125,7 +128,7 @@ function CreateProject() {
             />
           </div>
         </div>
-        <button className="btn" type="submit">
+        <button className="btn" type="submit" disabled={submitted}>
           Create Project
         </button>
       </form>

@@ -50,7 +50,7 @@ function Dashboard() {
       <div className="dashboard-projects">
         <ul>
           {projects.map((project) => (
-            <li key={project.name}>
+            <li key={project.id}>
               <Link to={"/dashboard/edit-project/" + project.id}>
                 <div className="dashboard-project">
                   <div className="dashboard-project-details">

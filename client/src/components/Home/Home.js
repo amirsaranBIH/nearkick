@@ -7,9 +7,8 @@ function Home() {
       <div className="cta">
         <h1>Nearkick</h1>
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nisi
-          felis, ullamcorper et leo non, posuere maximus velit. Curabitur a
-          tortor vel justo pellentesque tempus.
+          Nearkick is a decentralized application that allows you to create and
+          kickstart your own projects.
         </p>
         <Link to="/projects">
           <button className="btn" type="button">

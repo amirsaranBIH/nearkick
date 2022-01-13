@@ -2,6 +2,10 @@
   margin-bottom: 1em;
 }
 
-.faq ul {
-  padding: 1em;
+.faq details + details {
+  margin-top: 1em;
+}
+
+.faq details p {
+  margin-top: 0.5em;
 }
