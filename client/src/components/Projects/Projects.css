@@ -4,7 +4,7 @@
 }
 
 .all-projects ul li .project {
-  border-left: 5px solid rgb(218, 139, 22);
+  border-left: 10px solid var(--red);
   padding: 0.75em;
 }
 

@@ -4,7 +4,7 @@
 }
 
 .dashboard-projects ul li {
-  border-left: 3px solid #ccc;
+  border-left: 10px solid var(--red);
   padding: 0.75em;
 }
 

@@ -83,7 +83,7 @@ function CreateProject() {
           ></textarea>
         </div>
         <div className="form-group">
-          <label htmlFor="goal">Goal</label>
+          <label htmlFor="goal">Goal (in yoctoⓃ)</label>
           <input type="number" id="goal" ref={projectGoalInputRef} />
         </div>
         <div className="form-group">
@@ -104,7 +104,7 @@ function CreateProject() {
         <div>
           <h2 className="h2">Supporter Level Amounts</h2>
           <div className="form-group">
-            <label htmlFor="basic-level">Basic Level</label>
+            <label htmlFor="basic-level">Basic Level (in yoctoⓃ)</label>
             <input
               type="number"
               id="basic-level"
@@ -112,7 +112,9 @@ function CreateProject() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="intermediate-level">Intermediate Level</label>
+            <label htmlFor="intermediate-level">
+              Intermediate Level (in yoctoⓃ)
+            </label>
             <input
               type="number"
               id="intermediate-level"
@@ -120,7 +122,7 @@ function CreateProject() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="advanced-level">Advanced Level</label>
+            <label htmlFor="advanced-level">Advanced Level (in yoctoⓃ)</label>
             <input
               type="number"
               id="advanced-level"

@@ -46,41 +46,49 @@ function App() {
     <Router>
       <div>
         <header className="header">
-          <h1>
-            <Link to="/">NEARKICK</Link>
-          </h1>
           <nav className="navigation-links">
             <ul>
               <li>
                 <Link to="/projects">Projects</Link>
               </li>
               <li>
+                <Link to="/">
+                  <img
+                    className="brand-logo"
+                    src="/logo.png"
+                    alt="nearkick logo"
+                  />
+                </Link>
+              </li>
+              <li>
                 <Link to="/about">About</Link>
               </li>
-              {walletContext.wallet && walletContext.isSignedIn && (
-                <li className="wallet-button">
-                  <span onClick={toggleDropdown}>
-                    {walletContext.wallet.getAccountId()}
-                  </span>
-                  {showDropdown && (
-                    <ul className="wallet-button-dropdown">
-                      <li>
-                        <Link onClick={toggleDropdown} to="/dashboard">
-                          Dashboard
-                        </Link>
-                      </li>
-                      <li onClick={disconnectWalletHandler}>Logout</li>
-                    </ul>
-                  )}
-                </li>
-              )}
-              {walletContext.wallet && !walletContext.isSignedIn && (
-                <li className="wallet-button">
-                  <span onClick={connectWalletHandler}>Connect Wallet</span>
-                </li>
-              )}
             </ul>
           </nav>
+          <div className="wallet-connect">
+            {walletContext.wallet && walletContext.isSignedIn && (
+              <li className="wallet-button">
+                <span onClick={toggleDropdown}>
+                  {walletContext.wallet.getAccountId()}
+                </span>
+                {showDropdown && (
+                  <ul className="wallet-button-dropdown">
+                    <li>
+                      <Link onClick={toggleDropdown} to="/dashboard">
+                        Dashboard
+                      </Link>
+                    </li>
+                    <li onClick={disconnectWalletHandler}>Logout</li>
+                  </ul>
+                )}
+              </li>
+            )}
+            {walletContext.wallet && !walletContext.isSignedIn && (
+              <li className="wallet-button">
+                <span onClick={connectWalletHandler}>Connect Wallet</span>
+              </li>
+            )}
+          </div>
         </header>
         <main className="main">
           <Routes>

@@ -2,6 +2,11 @@
   margin-bottom: 1em;
 }
 
+.about a {
+  color: var(--blue);
+  text-decoration: underline;
+}
+
 .faq details + details {
   margin-top: 1em;
 }

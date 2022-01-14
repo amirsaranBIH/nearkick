@@ -1,16 +1,22 @@
 .header {
-  background-color: #f1f1f1;
-  height: 70px;
-  padding: 0 2em;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  background-color: var(--red);
+  height: var(--header-height);
+}
+
+.header .navigation-links li:nth-child(2) {
+  height: var(--header-height);
+}
+
+.header .brand-logo {
+  height: 100px;
 }
 
 .header .navigation-links > ul {
   list-style-type: none;
   display: flex;
   align-items: center;
+  justify-content: center;
+  height: var(--header-height);
 }
 
 .header .navigation-links > ul > li + li {
@@ -19,8 +25,9 @@
 
 .header .navigation-links > ul > li a,
 .header .navigation-links > ul > li.a {
-  color: black;
+  color: white;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .header .wallet-button {
@@ -29,20 +36,31 @@
 
 .header .wallet-button span {
   padding: 0.75em 1.25em;
-  background-color: rgb(218, 139, 22);
-  border-radius: 3px;
+  background-color: black;
   color: white;
   cursor: pointer;
+}
+
+.header .wallet-connect {
+  --btn-height: 50px;
+  position: absolute;
+  right: calc(var(--btn-height) / 2);
+  list-style: none;
+  top: calc((var(--header-height) / 2) - (var(--btn-height) / 2));
+}
+
+.header .wallet-connect span {
+  height: var(--btn-height);
+  display: block;
 }
 
 .wallet-button-dropdown {
   list-style: none;
   position: absolute;
-  top: 200%;
+  top: 110%;
   right: 0;
   background-color: #fff;
   width: 100%;
-  border-radius: 3px;
   border: 1px solid #ccc;
 }
 
@@ -57,7 +75,7 @@
 
 .main {
   max-width: 1200px;
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - var(--header-height));
   background-color: #fff;
   margin: 0 auto;
   padding: 2em;

@@ -3,13 +3,12 @@ import "./About.css";
 function About() {
   return (
     <div className="about">
-      <h1 className="h1">About</h1>
+      <h1 className="h1">About Nearkick</h1>
       <p>
         Nearkick is a decentralized application that allows you to create and
         kickstart your own projects. The goal is to create a platform that
-        allows anyone to create and kickstart their own projects. The platform
-        will be able to be used by anyone, and anyone can create and kickstart
-        their own projects.
+        allows anyone to create and kickstart their own projects and anyone to
+        fund them.
       </p>
       <p>
         When supporters of a project reach the goal, the project will be marked
@@ -18,6 +17,25 @@ function About() {
         project. If the project is not funded by the marked deadline, the
         supporters will be refunded the amount they have contributed. The
         project will be closed and the supporters will be notified.
+      </p>
+      <p>
+        This project is a entry into the Near MetaBUILD Hackathon (
+        <a
+          href="https://metabuild.devpost.com"
+          target="_blank"
+          rel="noreferrer"
+        >
+          https://metabuild.devpost.com
+        </a>
+        ). I built this on my own in less than two months. This project is open
+        source. You can check out the code here:{" "}
+        <a
+          href="https://github.com/amirsaranBIH/nearkick"
+          target="_blank"
+          rel="noreferrer"
+        >
+          https://github.com/amirsaranBIH/nearkick
+        </a>
       </p>
       <div className="faq">
         <h2 className="h2">Frequently Asked Questions</h2>
@@ -49,6 +67,14 @@ function About() {
               not funded by the marked deadline, the supporters will be refunded
               the amount they have contributed. The project will be closed and
               the supporters will be notified.
+            </p>
+          </details>
+          <details>
+            <summary>What happens if a project doesn't reach its goal?</summary>
+            <p>
+              If the project is not funded by the marked deadline, the
+              supporters will be refunded the amount they have contributed. The
+              project will be closed and the supporters will be notified.
             </p>
           </details>
         </div>
