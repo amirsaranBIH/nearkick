@@ -3,6 +3,8 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import WalletContext from "../../store/wallet-context";
 import { CONTRACT_ADDRESS } from "../../config";
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import { Carousel } from "react-responsive-carousel";
 
 function Project() {
   const walletContext = useContext(WalletContext);
@@ -58,6 +60,25 @@ function Project() {
       <h1 className="h1">{project.name}</h1>
       <div className="project-details">
         <div className="project-details-first">
+          <div className="project-images">
+            <Carousel showArrows={true} showStatus={false}>
+              {project.images.map((image, index) => (
+                <div>
+                  <img
+                    key={index}
+                    src={`https://ipfs.io/ipfs/${image}`}
+                    alt={project.name}
+                  />
+                </div>
+              ))}
+            </Carousel>
+            {/* <span className="project-image-control project-image-control-previous">
+              Previous
+            </span>
+            <span className="project-image-control  project-image-control-next">
+              Next
+            </span> */}
+          </div>
           <p>
             <b>About Project:</b>
           </p>

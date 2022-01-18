@@ -4,9 +4,13 @@
   margin-bottom: 2em;
 }
 
+.project-details-first {
+  flex: 1;
+}
+
 .project-details-second {
   min-width: max-content;
-  margin-left: 1em;
+  margin-left: 2em;
 }
 
 .project-supporters {
@@ -16,4 +20,30 @@
 
 .project-description {
   white-space: pre-line;
+}
+
+.project-images {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2em;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.project-images img {
+  display: block;
+}
+
+.project-images .project-image-control {
+  position: absolute;
+  top: 50%;
+  cursor: pointer;
+}
+
+.project-images .project-image-control-previous {
+  left: 1em;
+}
+
+.project-images .project-image-control-next {
+  right: 1em;
 }

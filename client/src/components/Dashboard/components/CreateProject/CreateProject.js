@@ -56,9 +56,6 @@ function CreateProject() {
       imageCids.push(path);
     }
 
-    console.log(imageCids);
-    return;
-
     setSubmitted(true);
 
     walletContext.contract
@@ -75,10 +72,14 @@ function CreateProject() {
             projectIntermediateAmountValue
           ),
           advanced_supporter_amount: parseFloat(projectAdvancedAmountValue),
+          images: imageCids,
         },
         300000000000000
       )
-      .then((res) => {
+      .then(async (res) => {
+        for (let i = 0; i < projectImages.length; i++) {
+          await ipfs.add(projectImages[i]);
+        }
         console.log(res);
       });
   }
@@ -150,7 +151,7 @@ function CreateProject() {
                   >
                     Remove
                   </span>
-                  <img src={URL.createObjectURL(image)} alt="project image" />
+                  <img src={URL.createObjectURL(image)} alt="project preview" />
                 </li>
               ))}
             </ul>

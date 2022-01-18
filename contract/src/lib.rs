@@ -74,6 +74,7 @@ pub struct Project {
     pub status: ProjectStatus,
     pub plan: SupporterPlans,
     pub level_amounts: HashMap<SupporterType, u128>,
+    pub images: Vec<String>,
 }
 
 #[near_bindgen]
@@ -94,7 +95,7 @@ impl Nearkick {
     }
 
     pub fn add_project(&mut self, goal: u128, name: String, description: String, plan: SupporterPlans, end_time: u64, cadence: String, 
-        basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128) -> u64 {
+        basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) -> u64 {
         self.current_id += 1;
         let project = Project {
             id: self.current_id,
@@ -112,6 +113,7 @@ impl Nearkick {
                 (SupporterType::Intermediate, intermediate_supporter_amount),
                 (SupporterType::Advanced, advanced_supporter_amount),
             ]),
+            images
         };
 
         self.projects.insert(&self.current_id, &project);
@@ -158,6 +160,7 @@ impl Nearkick {
                 (SupporterType::Intermediate, intermediate_supporter_amount),
                 (SupporterType::Advanced, advanced_supporter_amount),
             ]),
+            images: project.images,
         };
 
         self.projects.insert(&project_id, &new_project);
@@ -312,7 +315,7 @@ mod tests {
     #[test]
     fn test_add_project() {
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(), 10000000, 10000000000, 10000000000000);
+        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(), 10000000, 10000000000, 10000000000000, Vec::new());
         assert_eq!(nearkick.projects.get(&project_id).unwrap().goal, 1000);
     }
 
@@ -324,7 +327,7 @@ mod tests {
         let context = get_context(alice);
         testing_env!(context.build());
 
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000);
+        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
         nearkick.add_supporter_to_project(project_id, SupporterType::Basic);
         assert_eq!(nearkick.projects.get(&project_id).unwrap().balance, 0);
     }
@@ -332,7 +335,7 @@ mod tests {
     #[test]
     fn test_verify_supporter_on_project() {
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000);
+        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
         nearkick.add_supporter_to_project(project_id, SupporterType::Basic);
         assert_eq!(nearkick.verify_supporter_on_project(project_id, AccountId::new_unchecked("supporter".to_string())), true);
     }
@@ -340,7 +343,7 @@ mod tests {
     #[test]
     fn test_cancel_project() {
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000);
+        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
         nearkick.cancel_project(project_id);
         assert_eq!(nearkick.projects.get(&project_id).unwrap().status, ProjectStatus::Cancelled);
     }
@@ -348,7 +351,7 @@ mod tests {
     #[test]
     fn test_get_all_projects() {
         let mut nearkick = Nearkick::new();
-        nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000);
+        nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
         let projects = nearkick.get_all_projects();
         assert_eq!(projects.len(), 1);
     }
@@ -356,7 +359,7 @@ mod tests {
     #[test]
     fn test_get_project() {
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000);
+        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
         let project = nearkick.get_project(project_id);
         assert_eq!(project.goal, 1000);
     }
