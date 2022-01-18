@@ -1,11 +1,13 @@
 import "./CreateProject.css";
 import { useState, useRef, useContext } from "react";
 import WalletContext from "../../../../store/wallet-context";
+import * as IPFS from "ipfs-core";
 
 function CreateProject() {
   const walletContext = useContext(WalletContext);
 
   const [submitted, setSubmitted] = useState(false);
+  const [projectImages, setProjectImages] = useState([]);
 
   const projectNameInputRef = useRef("");
   const projectDescriptionInputRef = useRef("");
@@ -16,7 +18,7 @@ function CreateProject() {
   const projectIntermediateAmountInputRef = useRef("");
   const projectAdvancedAmountInputRef = useRef("");
 
-  function onSubmitHandler(e) {
+  async function onSubmitHandler(e) {
     e.preventDefault();
 
     const projectNameValue = projectNameInputRef.current.value;
@@ -43,6 +45,20 @@ function CreateProject() {
       return;
     }
 
+    const ipfs = await IPFS.create();
+
+    const imageCids = [];
+
+    for (let i = 0; i < projectImages.length; i++) {
+      const { path } = await ipfs.add(projectImages[i], {
+        onlyHash: true,
+      });
+      imageCids.push(path);
+    }
+
+    console.log(imageCids);
+    return;
+
     setSubmitted(true);
 
     walletContext.contract
@@ -65,6 +81,15 @@ function CreateProject() {
       .then((res) => {
         console.log(res);
       });
+  }
+
+  function onImageUploadHandler(e) {
+    setProjectImages(Array.from(e.target.files));
+  }
+
+  function onImageRemoveHandler(index) {
+    console.log(index);
+    setProjectImages(projectImages.filter((_, i) => i !== index));
   }
 
   return (
@@ -100,6 +125,36 @@ function CreateProject() {
             id="endDate"
             ref={projectEndDateInputRef}
           />
+        </div>
+        <div>
+          <h2 className="h2">Images</h2>
+          <div>
+            <div className="form-group">
+              <label htmlFor="image">Add up to five images</label>
+              <input
+                type="file"
+                id="image"
+                multiple
+                accept=".png, .jpg, jpeg, .gif"
+                onChange={onImageUploadHandler}
+              />
+            </div>
+            <ul className="project-image-preview-list">
+              {projectImages.map((image, index) => (
+                <li key={index}>
+                  <span
+                    className="remove-image"
+                    onClick={() => {
+                      onImageRemoveHandler(index);
+                    }}
+                  >
+                    Remove
+                  </span>
+                  <img src={URL.createObjectURL(image)} alt="project image" />
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
         <div>
           <h2 className="h2">Supporter Level Amounts</h2>

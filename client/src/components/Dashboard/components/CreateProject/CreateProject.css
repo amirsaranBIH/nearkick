@@ -1,0 +1,28 @@
+.project-image-preview-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 10px;
+}
+.project-image-preview-list li {
+  position: relative;
+  border: 1px solid #ccc;
+  display: flex;
+}
+
+.project-image-preview-list li img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: auto;
+}
+
+.project-image-preview-list li .remove-image {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.3em 1em;
+  background: #f00;
+  color: #fff;
+  cursor: pointer;
+}
