@@ -26,3 +26,38 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.dashboard-header .h1 {
+  margin-bottom: 0;
+}
+
+@media only screen and (max-width: 992px) {
+  .dashboard-project-details {
+    flex-direction: column;
+  }
+
+  .dashboard-project-details .dashboard-project-details-second {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.5em;
+    min-width: initial;
+  }
+
+  .dashboard-project-details .dashboard-project-details-second p {
+    flex-basis: 50%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .dashboard-project-details .dashboard-project-details-second {
+    display: none;
+  }
+
+  .dashboard-header .h1 {
+    margin-right: 0.5em;
+  }
+
+  .dashboard-header .h1 span {
+    display: none;
+  }
+}

@@ -37,7 +37,9 @@ function Dashboard() {
     <div>
       <div className="dashboard-header">
         <div>
-          <h1>Logged in as {walletContext.wallet.getAccountId()}</h1>
+          <h1 className="h1">
+            <span>Logged in as</span> {walletContext.wallet.getAccountId()}
+          </h1>
         </div>
         <div>
           <Link to="/dashboard/create-project">

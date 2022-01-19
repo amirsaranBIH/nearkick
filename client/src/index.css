@@ -75,3 +75,38 @@ a {
   min-height: 100px;
   max-height: 300px;
 }
+
+.form-group.input-error input,
+.form-group.input-error textarea,
+.form-group.input-error select {
+  border: 1px solid red;
+}
+
+.form-group.input-error label {
+  color: red;
+}
+
+.form-group.input-error .error-message {
+  color: red;
+  font-size: 0.8em;
+}
+
+@media only screen and (max-width: 992px) {
+  :root {
+    --header-height: 70px;
+
+    --red: #f50303;
+    --yellow: #f5f22c;
+    --blue: #2ca7f5;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .h1 {
+    font-size: 1.5em;
+  }
+
+  .h2 {
+    font-size: 1.2em;
+  }
+}

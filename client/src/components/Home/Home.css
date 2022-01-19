@@ -35,6 +35,10 @@
   text-align: center;
 }
 
+.cta img {
+  max-width: 100%;
+}
+
 .cta p {
   margin: 1em auto;
   max-width: 700px;
@@ -43,4 +47,10 @@
 
 .cta .buttons a + a {
   margin-left: 1em;
+}
+
+@media only screen and (max-width: 992px) {
+  .cta p {
+    font-size: 1em;
+  }
 }

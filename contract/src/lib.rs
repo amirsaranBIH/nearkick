@@ -137,7 +137,7 @@ impl Nearkick {
     }
 
     pub fn update_project(&mut self, project_id: u64, goal: u128, name: String, description: String, plan: SupporterPlans,
-        basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128) {
+        basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) {
         let project = self.projects.get(&project_id).unwrap();
 
         if project.owner != env::signer_account_id() {
@@ -160,7 +160,7 @@ impl Nearkick {
                 (SupporterType::Intermediate, intermediate_supporter_amount),
                 (SupporterType::Advanced, advanced_supporter_amount),
             ]),
-            images: project.images,
+            images,
         };
 
         self.projects.insert(&project_id, &new_project);

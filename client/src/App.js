@@ -23,6 +23,7 @@ function App() {
   const walletContext = useContext(WalletContext);
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showMobileDropdown, setShowMobileDropdown] = useState(false);
 
   function connectWalletHandler() {
     walletContext.wallet
@@ -40,6 +41,10 @@ function App() {
 
   function toggleDropdown() {
     setShowDropdown(!showDropdown);
+  }
+
+  function onMobileDropdownToggleHandler() {
+    setShowMobileDropdown(!showMobileDropdown);
   }
 
   return (
@@ -87,6 +92,39 @@ function App() {
               <li className="wallet-button">
                 <span onClick={connectWalletHandler}>Connect Wallet</span>
               </li>
+            )}
+          </div>
+          <div className="mobile-navigation">
+            <div
+              className="mobile-navigation-button"
+              onClick={onMobileDropdownToggleHandler}
+            >
+              <span>MENU</span>
+            </div>
+            {showMobileDropdown && (
+              <ul className="mobile-navigation-dropdown">
+                <li>
+                  <Link to="/projects">Projects</Link>
+                </li>
+                <li>
+                  <Link to="/about">About</Link>
+                </li>
+                {walletContext.wallet && walletContext.isSignedIn && (
+                  <li>
+                    <Link to="/dashboard">Dashboard</Link>
+                  </li>
+                )}
+                {walletContext.wallet && walletContext.isSignedIn && (
+                  <li onClick={disconnectWalletHandler}>
+                    <span>Logout</span>
+                  </li>
+                )}
+                {walletContext.wallet && !walletContext.isSignedIn && (
+                  <li onClick={connectWalletHandler}>
+                    <span>Connect Wallet</span>
+                  </li>
+                )}
+              </ul>
             )}
           </div>
         </header>

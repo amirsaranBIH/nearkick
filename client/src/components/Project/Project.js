@@ -63,9 +63,8 @@ function Project() {
           <div className="project-images">
             <Carousel showArrows={true} showStatus={false}>
               {project.images.map((image, index) => (
-                <div>
+                <div key={index}>
                   <img
-                    key={index}
                     src={`https://ipfs.io/ipfs/${image}`}
                     alt={project.name}
                   />

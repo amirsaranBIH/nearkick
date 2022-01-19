@@ -8,7 +8,7 @@
 }
 
 .header .brand-logo {
-  height: 100px;
+  height: var(--header-height);
 }
 
 .header .navigation-links > ul {
@@ -79,4 +79,70 @@
   background-color: #fff;
   margin: 0 auto;
   padding: 2em;
+}
+
+.mobile-navigation {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  align-items: end;
+}
+
+.mobile-navigation .mobile-navigation-button {
+  display: flex;
+  height: var(--header-height);
+  width: var(--header-height);
+  background-color: var(--yellow);
+  cursor: pointer;
+}
+
+.mobile-navigation .mobile-navigation-button span {
+  margin: auto;
+}
+
+.mobile-navigation .mobile-navigation-dropdown {
+  background-color: white;
+  list-style: none;
+}
+
+.mobile-navigation .mobile-navigation-dropdown li {
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.mobile-navigation .mobile-navigation-dropdown li a,
+.mobile-navigation .mobile-navigation-dropdown li span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  padding: 0.75em 1.25em;
+}
+
+@media only screen and (max-width: 992px) {
+  .header .navigation-links > ul li:first-child,
+  .header .navigation-links > ul li:last-child {
+    display: none;
+  }
+
+  .header .navigation-links > ul li {
+    margin-left: 0 !important;
+  }
+
+  .header .navigation-links > ul {
+    justify-content: start;
+  }
+
+  .wallet-connect {
+    display: none;
+  }
+
+  .mobile-navigation {
+    display: flex;
+  }
+
+  .main {
+    padding: 1em;
+  }
 }

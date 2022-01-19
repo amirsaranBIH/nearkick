@@ -30,3 +30,26 @@
   justify-content: space-between;
   align-items: center;
 }
+
+@media only screen and (max-width: 992px) {
+  .all-project-details {
+    flex-direction: column;
+  }
+
+  .all-project-details .all-project-details-second {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.5em;
+    min-width: initial;
+  }
+
+  .all-project-details .all-project-details-second p {
+    flex-basis: 50%;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .all-project-details .all-project-details-second {
+    display: none;
+  }
+}
