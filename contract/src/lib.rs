@@ -128,7 +128,7 @@ impl Nearkick {
             Some(base64::encode(json!({
                 "project_id": self.current_id,
             }).to_string())),
-            AccountId::new_unchecked("manager_v1.cron.testnet".to_string()),
+            AccountId::new_unchecked("manager_v1.croncat.testnet".to_string()),
             3_500_000_000_000_000_000_000,
             Gas::from(25_000_000_000_000),
         );
@@ -151,7 +151,7 @@ impl Nearkick {
             description,
             supporters: project.supporters,
             balance: project.balance,
-            goal: goal,
+            goal,
             end_time: project.end_time,
             status: project.status,
             plan,

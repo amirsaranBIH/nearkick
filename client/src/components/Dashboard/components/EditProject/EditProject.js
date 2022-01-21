@@ -37,6 +37,7 @@ function EditProject() {
     const ipfs = await IPFS.create();
 
     const images = [];
+    const newlyAddedImages = [];
 
     for (let i = 0; i < project.images.length; i++) {
       if (typeof project.images[i] !== "string") {
@@ -44,6 +45,7 @@ function EditProject() {
           onlyHash: true,
         });
         images.push(path);
+        newlyAddedImages.push(path);
       } else {
         images.push(project.images[i]);
       }
@@ -61,7 +63,10 @@ function EditProject() {
         advanced_supporter_amount: project.level_amounts.Advanced,
         images,
       })
-      .then((res) => {
+      .then(async (res) => {
+        for (let i = 0; i < newlyAddedImages.length; i++) {
+          await ipfs.add(newlyAddedImages[i]);
+        }
         console.log(res);
       });
   }
@@ -146,9 +151,18 @@ function EditProject() {
       errorMessages.name = "Project name must be at least 3 characters";
     }
 
+    if (project.name.length > 100) {
+      errorMessages.name = "Project name must be 100 characters or less";
+    }
+
     if (project.description.length < 100) {
       errorMessages.description =
         "Project description must be at least 100 characters";
+    }
+
+    if (project.description.length > 500) {
+      errorMessages.description =
+        "Project description must be 500 characters or less";
     }
 
     if (project.goal < 1) {
@@ -159,12 +173,20 @@ function EditProject() {
       errorMessages.plan = "Project plan must be either OneTime or Recurring";
     }
 
+    if (project.end_time <= new Date().toISOString().slice(0, 16)) {
+      errorMessages.endDate = "Project end date must be in the future";
+    }
+
     if (project.end_time.length < 1) {
       errorMessages.endDate = "Project end date must be set";
     }
 
     if (project.images.length < 1) {
       errorMessages.images = "Project must have at least one image";
+    }
+
+    if (project.images.length > 5) {
+      errorMessages.images = "Project can have a maximum of 5 images";
     }
 
     if (project.level_amounts.Basic < 1) {
@@ -183,7 +205,7 @@ function EditProject() {
 
     setErrors(errorMessages);
 
-    return errorMessages.length === 0;
+    return Object.keys(errorMessages).length === 0;
   }
 
   function hasErrors(field) {
@@ -335,59 +357,61 @@ function EditProject() {
         </div>
         <div>
           <h2 className="h2">Supporter Level Amounts</h2>
-          <div
-            className={`form-group ${
-              hasErrors("basicAmount") ? "input-error" : ""
-            }`}
-          >
-            <label htmlFor="basic-level">Basic Level (in yoctoⓃ)</label>
-            <input
-              type="number"
-              id="basic-level"
-              value={project.level_amounts.Basic}
-              onInput={onBasicAmountChangeHandler}
-            />
-            {hasErrors("basicAmount") && (
-              <span className="error-message">{getError("basicAmount")}</span>
-            )}
-          </div>
-          <div
-            className={`form-group ${
-              hasErrors("intermediateAmount") ? "input-error" : ""
-            }`}
-          >
-            <label htmlFor="intermediate-level">
-              Intermediate Level (in yoctoⓃ)
-            </label>
-            <input
-              type="number"
-              id="intermediate-level"
-              value={project.level_amounts.Intermediate}
-              onInput={onIntermediateAmountChangeHandler}
-            />
-            {hasErrors("intermediateAmount") && (
-              <span className="error-message">
-                {getError("intermediateAmount")}
-              </span>
-            )}
-          </div>
-          <div
-            className={`form-group ${
-              hasErrors("advancedAmount") ? "input-error" : ""
-            }`}
-          >
-            <label htmlFor="advanced-level">Advanced Level (in yoctoⓃ)</label>
-            <input
-              type="number"
-              id="advanced-level"
-              value={project.level_amounts.Advanced}
-              onInput={onAdvancedAmountChangeHandler}
-            />
-            {hasErrors("advancedAmount") && (
-              <span className="error-message">
-                {getError("advancedAmount")}
-              </span>
-            )}
+          <div className="level-amounts">
+            <div
+              className={`form-group ${
+                hasErrors("basicAmount") ? "input-error" : ""
+              }`}
+            >
+              <label htmlFor="basic-level">Basic Level (in yoctoⓃ)</label>
+              <input
+                type="number"
+                id="basic-level"
+                value={project.level_amounts.Basic}
+                onInput={onBasicAmountChangeHandler}
+              />
+              {hasErrors("basicAmount") && (
+                <span className="error-message">{getError("basicAmount")}</span>
+              )}
+            </div>
+            <div
+              className={`form-group ${
+                hasErrors("intermediateAmount") ? "input-error" : ""
+              }`}
+            >
+              <label htmlFor="intermediate-level">
+                Intermediate Level (in yoctoⓃ)
+              </label>
+              <input
+                type="number"
+                id="intermediate-level"
+                value={project.level_amounts.Intermediate}
+                onInput={onIntermediateAmountChangeHandler}
+              />
+              {hasErrors("intermediateAmount") && (
+                <span className="error-message">
+                  {getError("intermediateAmount")}
+                </span>
+              )}
+            </div>
+            <div
+              className={`form-group ${
+                hasErrors("advancedAmount") ? "input-error" : ""
+              }`}
+            >
+              <label htmlFor="advanced-level">Advanced Level (in yoctoⓃ)</label>
+              <input
+                type="number"
+                id="advanced-level"
+                value={project.level_amounts.Advanced}
+                onInput={onAdvancedAmountChangeHandler}
+              />
+              {hasErrors("advancedAmount") && (
+                <span className="error-message">
+                  {getError("advancedAmount")}
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <div className="buttons">

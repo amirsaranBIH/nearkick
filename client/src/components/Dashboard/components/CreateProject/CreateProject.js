@@ -27,6 +27,7 @@ function CreateProject() {
     const valid = verifyFormValues();
 
     if (!valid) {
+      console.log("Form is not valid");
       return;
     }
 
@@ -48,11 +49,6 @@ function CreateProject() {
     const cadence = `0 ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${
       date.getMonth() + 1
     } *`;
-
-    if (newDate < 0) {
-      alert("End date must be in the future");
-      return;
-    }
 
     const ipfs = await IPFS.create();
 
@@ -109,9 +105,18 @@ function CreateProject() {
       errorMessages.name = "Project name must be at least 3 characters";
     }
 
+    if (projectNameValue.length > 100) {
+      errorMessages.name = "Project name must be 100 characters or less";
+    }
+
     if (projectDescriptionValue.length < 100) {
       errorMessages.description =
         "Project description must be at least 100 characters";
+    }
+
+    if (projectDescriptionValue.length > 500) {
+      errorMessages.description =
+        "Project description must be 500 characters or less";
     }
 
     if (projectGoalValue < 1) {
@@ -122,12 +127,20 @@ function CreateProject() {
       errorMessages.plan = "Project plan must be either OneTime or Recurring";
     }
 
+    if (projectEndDateValue <= new Date().toISOString().slice(0, 16)) {
+      errorMessages.endDate = "Project end date must be in the future";
+    }
+
     if (projectEndDateValue.length < 1) {
       errorMessages.endDate = "Project end date must be set";
     }
 
     if (projectImages.length < 1) {
       errorMessages.images = "Project must have at least one image";
+    }
+
+    if (projectImages.length > 5) {
+      errorMessages.images = "Project can have a maximum of 5 images";
     }
 
     if (projectBasicAmountValue < 1) {
@@ -146,7 +159,7 @@ function CreateProject() {
 
     setErrors(errorMessages);
 
-    return errorMessages.length === 0;
+    return Object.keys(errorMessages).length === 0;
   }
 
   function onImageUploadHandler(e) {
@@ -280,59 +293,61 @@ function CreateProject() {
         </div>
         <div>
           <h2 className="h2">Supporter Level Amounts</h2>
-          <div
-            className={`form-group ${
-              hasErrors("basicAmount") ? "input-error" : ""
-            }`}
-          >
-            <label htmlFor="basic-level">Basic Level (in yoctoⓃ)</label>
-            <input
-              type="number"
-              id="basic-level"
-              ref={projectBasicAmountInputRef}
-              onChange={checkErrors}
-            />
-            {hasErrors("basicAmount") && (
-              <span className="error-message">{getError("basicAmount")}</span>
-            )}
-          </div>
-          <div
-            className={`form-group ${
-              hasErrors("intermediateAmount") ? "input-error" : ""
-            }`}
-          >
-            <label htmlFor="intermediate-level">
-              Intermediate Level (in yoctoⓃ)
-            </label>
-            <input
-              type="number"
-              id="intermediate-level"
-              ref={projectIntermediateAmountInputRef}
-              onChange={checkErrors}
-            />
-            {hasErrors("basicAmount") && (
-              <span className="error-message">
-                {getError("intermediateAmount")}
-              </span>
-            )}
-          </div>
-          <div
-            className={`form-group ${
-              hasErrors("advancedAmount") ? "input-error" : ""
-            }`}
-          >
-            <label htmlFor="advanced-level">Advanced Level (in yoctoⓃ)</label>
-            <input
-              type="number"
-              id="advanced-level"
-              ref={projectAdvancedAmountInputRef}
-              onChange={checkErrors}
-            />
-            {hasErrors("advancedAmount") && (
-              <span className="error-message">
-                {getError("advancedAmount")}
-              </span>
-            )}
+          <div className="level-amounts">
+            <div
+              className={`form-group ${
+                hasErrors("basicAmount") ? "input-error" : ""
+              }`}
+            >
+              <label htmlFor="basic-level">Basic Level (in yoctoⓃ)</label>
+              <input
+                type="number"
+                id="basic-level"
+                ref={projectBasicAmountInputRef}
+                onChange={checkErrors}
+              />
+              {hasErrors("basicAmount") && (
+                <span className="error-message">{getError("basicAmount")}</span>
+              )}
+            </div>
+            <div
+              className={`form-group ${
+                hasErrors("intermediateAmount") ? "input-error" : ""
+              }`}
+            >
+              <label htmlFor="intermediate-level">
+                Intermediate Level (in yoctoⓃ)
+              </label>
+              <input
+                type="number"
+                id="intermediate-level"
+                ref={projectIntermediateAmountInputRef}
+                onChange={checkErrors}
+              />
+              {hasErrors("basicAmount") && (
+                <span className="error-message">
+                  {getError("intermediateAmount")}
+                </span>
+              )}
+            </div>
+            <div
+              className={`form-group ${
+                hasErrors("advancedAmount") ? "input-error" : ""
+              }`}
+            >
+              <label htmlFor="advanced-level">Advanced Level (in yoctoⓃ)</label>
+              <input
+                type="number"
+                id="advanced-level"
+                ref={projectAdvancedAmountInputRef}
+                onChange={checkErrors}
+              />
+              {hasErrors("advancedAmount") && (
+                <span className="error-message">
+                  {getError("advancedAmount")}
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <button className="btn" type="submit" disabled={submitted}>

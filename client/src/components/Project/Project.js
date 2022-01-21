@@ -61,7 +61,12 @@ function Project() {
       <div className="project-details">
         <div className="project-details-first">
           <div className="project-images">
-            <Carousel showArrows={true} showStatus={false}>
+            <Carousel
+              showArrows={true}
+              showStatus={false}
+              showThumbs={project.images.length > 1}
+              showIndicators={project.images.length > 1}
+            >
               {project.images.map((image, index) => (
                 <div key={index}>
                   <img
@@ -71,12 +76,6 @@ function Project() {
                 </div>
               ))}
             </Carousel>
-            {/* <span className="project-image-control project-image-control-previous">
-              Previous
-            </span>
-            <span className="project-image-control  project-image-control-next">
-              Next
-            </span> */}
           </div>
           <p>
             <b>About Project:</b>
@@ -102,6 +101,32 @@ function Project() {
           <p>
             <b>Status:</b> {project.status}
           </p>
+          <div className="become-supporter">
+            <h2>Become a Supporter</h2>
+            {project.supporters[walletContext.wallet.getAccountId()] ? (
+              <p>You are a supporter for this project!</p>
+            ) : (
+              <div>
+                <div className="form-group">
+                  <label htmlFor="type">Supporter Type</label>
+                  <select
+                    id="type"
+                    value={supporterLevel}
+                    onChange={onSupporterLevelChangeHandler}
+                  >
+                    {Object.keys(project.level_amounts).map((level) => (
+                      <option key={level} value={level}>
+                        {level}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <button className="btn" type="button" onClick={supportProject}>
+                  Become a Supporter
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <p>
@@ -118,31 +143,6 @@ function Project() {
           <div>No supporters yet.</div>
         )}
       </ul>
-      <div>
-        {project.supporters[walletContext.wallet.getAccountId()] ? (
-          <p>You are a supporter for this project!</p>
-        ) : (
-          <div>
-            <div className="form-group">
-              <label htmlFor="type">Supporter Type</label>
-              <select
-                id="type"
-                value={supporterLevel}
-                onChange={onSupporterLevelChangeHandler}
-              >
-                {Object.keys(project.level_amounts).map((level) => (
-                  <option key={level} value={level}>
-                    {level}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button className="btn" type="button" onClick={supportProject}>
-              Become a Supporter
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   );
 }
