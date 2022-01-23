@@ -120,6 +120,33 @@
   padding: 0.75em 1.25em;
 }
 
+.loading {
+  height: 10px;
+  width: 100%;
+  background-color: var(--yellow);
+  position: fixed;
+  overflow-x: hidden;
+  top: 0;
+  left: 0;
+}
+
+.loading .loading-bar {
+  height: 100%;
+  width: 20%;
+  background-color: var(--blue);
+  position: absolute;
+  animation: loading 1.5s infinite linear;
+}
+
+@keyframes loading {
+  0% {
+    left: -20%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
 @media only screen and (max-width: 992px) {
   .header .navigation-links > ul li:first-child,
   .header .navigation-links > ul li:last-child {

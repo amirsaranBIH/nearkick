@@ -18,9 +18,11 @@ import EditProject from "./components/Dashboard/components/EditProject/EditProje
 import { CONTRACT_ADDRESS } from "./config";
 
 import WalletContext from "./store/wallet-context";
+import LoadingContext from "./store/loading-context";
 
 function App() {
   const walletContext = useContext(WalletContext);
+  const loadingContext = useContext(LoadingContext);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [showMobileDropdown, setShowMobileDropdown] = useState(false);
@@ -128,6 +130,11 @@ function App() {
             )}
           </div>
         </header>
+        {loadingContext.loading && (
+          <div className="loading">
+            <div className="loading-bar"></div>
+          </div>
+        )}
         <main className="main">
           <Routes>
             <Route path="/" element={<Home />} />

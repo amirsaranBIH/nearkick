@@ -3,11 +3,13 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import WalletContext from "../../../../store/wallet-context";
 import * as IPFS from "ipfs-core";
+import LoadingContext from "../../../../store/loading-context";
 
 function EditProject() {
   const { id } = useParams();
 
   const walletContext = useContext(WalletContext);
+  const loadingContext = useContext(LoadingContext);
 
   const [project, setProject] = useState(null);
   const [errors, setErrors] = useState({});
@@ -22,6 +24,10 @@ function EditProject() {
         });
     }
   }, [walletContext.contract, walletContext.wallet, id]);
+
+  useEffect(() => {
+    checkErrors();
+  }, [project]);
 
   async function onSubmitHandler(e) {
     e.preventDefault();
@@ -51,44 +57,44 @@ function EditProject() {
       }
     }
 
+    loadingContext.setLoading(true);
+
     walletContext.contract
       .update_project({
         project_id: parseInt(id, 10),
-        goal: project.goal,
+        goal: Number(project.goal),
         name: project.name,
         description: project.description,
         plan: project.plan,
-        basic_supporter_amount: project.level_amounts.Basic,
-        intermediate_supporter_amount: project.level_amounts.Intermediate,
-        advanced_supporter_amount: project.level_amounts.Advanced,
+        basic_supporter_amount: Number(project.level_amounts.Basic),
+        intermediate_supporter_amount: Number(
+          project.level_amounts.Intermediate
+        ),
+        advanced_supporter_amount: Number(project.level_amounts.Advanced),
         images,
       })
       .then(async (res) => {
         for (let i = 0; i < newlyAddedImages.length; i++) {
           await ipfs.add(newlyAddedImages[i]);
         }
-        console.log(res);
+        loadingContext.setLoading(false);
       });
   }
 
   function onNameChangeHandler(event) {
     setProject({ ...project, name: event.target.value });
-    checkErrors();
   }
 
   function onDescriptionChangeHandler(event) {
     setProject({ ...project, description: event.target.value });
-    checkErrors();
   }
 
   function onGoalChangeHandler(event) {
-    setProject({ ...project, goal: Number(event.target.value) });
-    checkErrors();
+    setProject({ ...project, goal: event.target.value });
   }
 
   function onPlanChangeHandler(event) {
     setProject({ ...project, plan: event.target.value });
-    checkErrors();
   }
 
   function onBasicAmountChangeHandler(event) {
@@ -96,10 +102,9 @@ function EditProject() {
       ...project,
       level_amounts: {
         ...project.level_amounts,
-        Basic: Number(event.target.value),
+        Basic: event.target.value,
       },
     });
-    checkErrors();
   }
 
   function onIntermediateAmountChangeHandler(event) {
@@ -107,10 +112,9 @@ function EditProject() {
       ...project,
       level_amounts: {
         ...project.level_amounts,
-        Intermediate: Number(event.target.value),
+        Intermediate: event.target.value,
       },
     });
-    checkErrors();
   }
 
   function onAdvancedAmountChangeHandler(event) {
@@ -121,13 +125,11 @@ function EditProject() {
         Advanced: Number(event.target.value),
       },
     });
-    checkErrors();
   }
 
   function onEndDateChangeHandler(event) {
     const newDate = new Date(event.target.value).valueOf() * 1000000;
     setProject({ ...project, end_time: newDate });
-    checkErrors();
   }
 
   function onCancelProjectHandler() {
@@ -287,7 +289,12 @@ function EditProject() {
           )}
         </div>
         <div className={`form-group ${hasErrors("plan") ? "input-error" : ""}`}>
-          <label htmlFor="plan">Plan</label>
+          <label htmlFor="plan">
+            Plan{" "}
+            <span title="What type of subscription does your product or service provide?">
+              &#x1F6C8;
+            </span>
+          </label>
           <select id="plan" value={project.plan} onInput={onPlanChangeHandler}>
             <option value="OneTime">One Time</option>
             <option value="Recurring">Recurring</option>

@@ -1,13 +1,18 @@
 import "./CreateProject.css";
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
+import { Navigate } from "react-router-dom";
 import WalletContext from "../../../../store/wallet-context";
+import LoadingContext from "../../../../store/loading-context";
 import * as IPFS from "ipfs-core";
 
 function CreateProject() {
   const walletContext = useContext(WalletContext);
+  const loadingContext = useContext(LoadingContext);
   const [errors, setErrors] = useState({});
 
+  const [createdProjectId, setCreatedProjectId] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const [projectImages, setProjectImages] = useState([]);
 
   const projectNameInputRef = useRef("");
@@ -19,10 +24,14 @@ function CreateProject() {
   const projectIntermediateAmountInputRef = useRef("");
   const projectAdvancedAmountInputRef = useRef("");
 
+  useEffect(() => {
+    checkErrors();
+  }, [projectImages]);
+
   async function onSubmitHandler(e) {
     e.preventDefault();
 
-    setSubmitted(true);
+    setDirty(true);
 
     const valid = verifyFormValues();
 
@@ -61,20 +70,21 @@ function CreateProject() {
       imageCids.push(path);
     }
 
+    setSubmitted(true);
+    loadingContext.setLoading(true);
+
     walletContext.contract
       .add_project(
         {
-          goal: parseFloat(projectGoalValue),
+          goal: Number(projectGoalValue),
           name: projectNameValue,
           description: projectDescriptionValue,
           plan: projectPlanValue,
           end_time: newDate,
           cadence,
-          basic_supporter_amount: parseFloat(projectBasicAmountValue),
-          intermediate_supporter_amount: parseFloat(
-            projectIntermediateAmountValue
-          ),
-          advanced_supporter_amount: parseFloat(projectAdvancedAmountValue),
+          basic_supporter_amount: Number(projectBasicAmountValue),
+          intermediate_supporter_amount: Number(projectIntermediateAmountValue),
+          advanced_supporter_amount: Number(projectAdvancedAmountValue),
           images: imageCids,
         },
         300000000000000
@@ -83,7 +93,8 @@ function CreateProject() {
         for (let i = 0; i < projectImages.length; i++) {
           await ipfs.add(projectImages[i]);
         }
-        console.log(res);
+        setCreatedProjectId(parseInt(res, 10));
+        loadingContext.setLoading(false);
       });
   }
 
@@ -165,12 +176,10 @@ function CreateProject() {
   function onImageUploadHandler(e) {
     const images = Array.from(e.target.files);
     setProjectImages([...projectImages, ...images]);
-    checkErrors();
   }
 
   function onImageRemoveHandler(index) {
     setProjectImages(projectImages.filter((_, i) => i !== index));
-    checkErrors();
   }
 
   function hasErrors(field) {
@@ -182,9 +191,13 @@ function CreateProject() {
   }
 
   function checkErrors() {
-    if (submitted) {
+    if (dirty) {
       verifyFormValues();
     }
+  }
+
+  if (createdProjectId) {
+    return <Navigate to={`/dashboard/edit-project/${createdProjectId}`} />;
   }
 
   return (
@@ -231,7 +244,12 @@ function CreateProject() {
           )}
         </div>
         <div className={`form-group ${hasErrors("plan") ? "input-error" : ""}`}>
-          <label htmlFor="plan">Plan</label>
+          <label htmlFor="plan">
+            Plan{" "}
+            <span title="What type of subscription does your product or service provide?">
+              &#x1F6C8;
+            </span>
+          </label>
           <select id="plan" ref={projectPlanInputRef} onChange={checkErrors}>
             <option value="OneTime">One Time</option>
             <option value="Recurring">Recurring</option>
@@ -268,7 +286,7 @@ function CreateProject() {
                 id="image"
                 multiple
                 accept=".png, .jpg, jpeg, .gif"
-                onChange={onImageUploadHandler}
+                onInput={onImageUploadHandler}
               />
               {hasErrors("images") && (
                 <span className="error-message">{getError("images")}</span>

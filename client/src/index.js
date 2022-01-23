@@ -13,6 +13,7 @@ import {
   HELPER_URL,
   EXPLORER_URL,
 } from "./config";
+import { LoadingContextProvider } from "./store/loading-context";
 
 async function initWallet() {
   const config = {
@@ -49,9 +50,11 @@ async function initWallet() {
 initWallet().then((res) => {
   ReactDOM.render(
     <WalletContextProvider wallet={res.wallet} contract={res.contract}>
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
+      <LoadingContextProvider>
+        <React.StrictMode>
+          <App />
+        </React.StrictMode>
+      </LoadingContextProvider>
     </WalletContextProvider>,
     document.getElementById("root")
   );

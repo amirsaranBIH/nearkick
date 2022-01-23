@@ -19,7 +19,7 @@
 }
 
 .project-status.Funding {
-  background-color: blue;
+  background-color: var(--blue);
 }
 
 .project-status.Funded {
@@ -27,7 +27,7 @@
 }
 
 .project-status.Cancelled {
-  background-color: red;
+  background-color: var(--red);
 }
 
 .project-status.Unfulfilled {
