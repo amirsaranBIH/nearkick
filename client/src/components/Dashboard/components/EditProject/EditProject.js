@@ -73,10 +73,14 @@ function EditProject() {
         advanced_supporter_amount: Number(project.level_amounts.Advanced),
         images,
       })
-      .then(async (res) => {
+      .then(async () => {
         for (let i = 0; i < newlyAddedImages.length; i++) {
           await ipfs.add(newlyAddedImages[i]);
         }
+        loadingContext.setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
         loadingContext.setLoading(false);
       });
   }
@@ -146,8 +150,6 @@ function EditProject() {
 
   function verifyFormValues() {
     const errorMessages = {};
-
-    console.log(project);
 
     if (project.name.length < 3) {
       errorMessages.name = "Project name must be at least 3 characters";

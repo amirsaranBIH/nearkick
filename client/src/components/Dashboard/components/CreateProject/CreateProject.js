@@ -95,6 +95,10 @@ function CreateProject() {
         }
         setCreatedProjectId(parseInt(res, 10));
         loadingContext.setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        loadingContext.setLoading(false);
       });
   }
 

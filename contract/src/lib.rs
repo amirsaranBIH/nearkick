@@ -94,8 +94,20 @@ impl Nearkick {
         }
     }
 
-    pub fn add_project(&mut self, goal: u128, name: String, description: String, plan: SupporterPlans, end_time: u64, cadence: String, 
-        basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) -> u64 {
+    pub fn add_project(&mut self, goal: u128, name: String, description: String, plan: SupporterPlans, end_time: u64, cadence: String, basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) -> u64 {
+        assert!(name.len() >= 3, "Project name must be at least 3 characters");
+        assert!(name.len() <= 100, "Project name must be 100 characters or less");
+        assert!(description.len() >= 100, "Project description must be at least 100 characters");
+        assert!(description.len() <= 500, "Project description must be 500 characters or less");
+        assert!(goal >= 1, "Project goal must be at least 1");
+        assert!(plan == SupporterPlans::OneTime || plan == SupporterPlans::Recurring, "Project plan must be either OneTime or Recurring");
+        assert!(end_time >= env::block_timestamp(), "Project end date must be in the future");
+        assert!(basic_supporter_amount >= 1, "Basic supporter amount must be at least 1");
+        assert!(intermediate_supporter_amount >= 1, "Intermediate supporter amount must be at least 1");
+        assert!(advanced_supporter_amount >= 1, "Advanced supporter amount must be at least 1");
+        assert!(images.len() >= 1, "Project must have at least 1 image");
+        assert!(images.len() <= 5, "Project images must be 5 or less");
+
         self.current_id += 1;
         let project = Project {
             id: self.current_id,
@@ -136,8 +148,19 @@ impl Nearkick {
         self.current_id
     }
 
-    pub fn update_project(&mut self, project_id: u64, goal: u128, name: String, description: String, plan: SupporterPlans,
-        basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) {
+    pub fn update_project(&mut self, project_id: u64, goal: u128, name: String, description: String, plan: SupporterPlans, basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) {
+        assert!(name.len() >= 3, "Project name must be at least 3 characters");
+        assert!(name.len() <= 100, "Project name must be 100 characters or less");
+        assert!(description.len() >= 100, "Project description must be at least 100 characters");
+        assert!(description.len() <= 500, "Project description must be 500 characters or less");
+        assert!(goal >= 1, "Project goal must be at least 1");
+        assert!(plan == SupporterPlans::OneTime || plan == SupporterPlans::Recurring, "Project plan must be either OneTime or Recurring");
+        assert!(basic_supporter_amount >= 1, "Basic supporter amount must be at least 1");
+        assert!(intermediate_supporter_amount >= 1, "Intermediate supporter amount must be at least 1");
+        assert!(advanced_supporter_amount >= 1, "Advanced supporter amount must be at least 1");
+        assert!(images.len() >= 1, "Project must have at least 1 image");
+        assert!(images.len() <= 5, "Project images must be 5 or less");
+
         let project = self.projects.get(&project_id).unwrap();
 
         if project.owner != env::signer_account_id() {
