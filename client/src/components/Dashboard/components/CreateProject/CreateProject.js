@@ -3,7 +3,7 @@ import { useState, useRef, useContext, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import WalletContext from "../../../../store/wallet-context";
 import LoadingContext from "../../../../store/loading-context";
-import * as IPFS from "ipfs-core";
+import { create } from "ipfs-http-client";
 
 function CreateProject() {
   const walletContext = useContext(WalletContext);
@@ -59,7 +59,11 @@ function CreateProject() {
       date.getMonth() + 1
     } *`;
 
-    const ipfs = await IPFS.create();
+    const ipfs = create({
+      host: "ipfs.infura.io",
+      port: "5001",
+      protocol: "https",
+    });
 
     const imageCids = [];
 

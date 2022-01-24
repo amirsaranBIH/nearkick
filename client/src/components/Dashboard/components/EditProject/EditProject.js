@@ -2,7 +2,7 @@ import "./EditProject.css";
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import WalletContext from "../../../../store/wallet-context";
-import * as IPFS from "ipfs-core";
+import { create } from "ipfs-http-client";
 import LoadingContext from "../../../../store/loading-context";
 
 function EditProject() {
@@ -40,7 +40,11 @@ function EditProject() {
       return;
     }
 
-    const ipfs = await IPFS.create();
+    const ipfs = create({
+      host: "ipfs.infura.io",
+      port: "5001",
+      protocol: "https",
+    });
 
     const images = [];
     const newlyAddedImages = [];
