@@ -101,7 +101,7 @@ impl Nearkick {
         assert!(description.len() <= 500, "Project description must be 500 characters or less");
         assert!(goal >= 1, "Project goal must be at least 1");
         assert!(plan == SupporterPlans::OneTime || plan == SupporterPlans::Recurring, "Project plan must be either OneTime or Recurring");
-        assert!(end_time >= env::block_timestamp(), "Project end date must be in the future");
+        assert!(end_time > 0, "Project end date must be in the future");
         assert!(basic_supporter_amount >= 1, "Basic supporter amount must be at least 1");
         assert!(intermediate_supporter_amount >= 1, "Intermediate supporter amount must be at least 1");
         assert!(advanced_supporter_amount >= 1, "Advanced supporter amount must be at least 1");

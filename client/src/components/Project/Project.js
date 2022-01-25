@@ -3,13 +3,15 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import WalletContext from "../../store/wallet-context";
 import { CONTRACT_ADDRESS } from "../../config";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
+import { useToasts } from "react-toast-notifications";
 
 function Project() {
-  const walletContext = useContext(WalletContext);
-
   const { id } = useParams();
+
+  const { addToast } = useToasts();
+  const walletContext = useContext(WalletContext);
   const [project, setProject] = useState(null);
   const [supporterLevel, setSupporterLevel] = useState("Basic");
 
@@ -39,6 +41,10 @@ function Project() {
         )
         .then((res) => {
           console.log(res);
+          addToast("Successfully became a supporter on project", {
+            appearance: "success",
+            autoDismiss: true,
+          });
         });
     }
   }

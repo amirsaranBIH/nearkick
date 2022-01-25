@@ -4,14 +4,15 @@ import { Navigate } from "react-router-dom";
 import WalletContext from "../../../../store/wallet-context";
 import LoadingContext from "../../../../store/loading-context";
 import { create } from "ipfs-http-client";
+import { useToasts } from "react-toast-notifications";
 
 function CreateProject() {
+  const { addToast } = useToasts();
   const walletContext = useContext(WalletContext);
   const loadingContext = useContext(LoadingContext);
   const [errors, setErrors] = useState({});
 
   const [createdProjectId, setCreatedProjectId] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [projectImages, setProjectImages] = useState([]);
 
@@ -74,7 +75,6 @@ function CreateProject() {
       imageCids.push(path);
     }
 
-    setSubmitted(true);
     loadingContext.setLoading(true);
 
     walletContext.contract
@@ -98,6 +98,10 @@ function CreateProject() {
           await ipfs.add(projectImages[i]);
         }
         setCreatedProjectId(parseInt(res, 10));
+        addToast("Successfully created project", {
+          appearance: "success",
+          autoDismiss: true,
+        });
         loadingContext.setLoading(false);
       })
       .catch((err) => {
@@ -376,7 +380,7 @@ function CreateProject() {
             </div>
           </div>
         </div>
-        <button className="btn" type="submit" disabled={submitted}>
+        <button className="btn" type="submit" disabled={loadingContext.loading}>
           Create Project
         </button>
       </form>

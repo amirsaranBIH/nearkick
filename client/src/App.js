@@ -7,6 +7,7 @@ import {
   Link,
   Navigate,
 } from "react-router-dom";
+import { useToasts } from "react-toast-notifications";
 
 import Home from "./components/Home/Home";
 import Projects from "./components/Projects/Projects";
@@ -21,6 +22,7 @@ import WalletContext from "./store/wallet-context";
 import LoadingContext from "./store/loading-context";
 
 function App() {
+  const { addToast } = useToasts();
   const walletContext = useContext(WalletContext);
   const loadingContext = useContext(LoadingContext);
 
@@ -31,7 +33,10 @@ function App() {
     walletContext.wallet
       .requestSignIn(CONTRACT_ADDRESS, "Nearkick")
       .then((res) => {
-        console.log(res);
+        addToast("Successfully logged into wallet", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       });
   }
 
@@ -39,6 +44,10 @@ function App() {
     walletContext.wallet.signOut();
     walletContext.setIsSignedIn(false);
     toggleDropdown();
+    addToast("Successfully logged out of wallet", {
+      appearance: "success",
+      autoDismiss: true,
+    });
   }
 
   function toggleDropdown() {

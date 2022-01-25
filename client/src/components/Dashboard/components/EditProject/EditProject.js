@@ -4,16 +4,18 @@ import { useParams } from "react-router-dom";
 import WalletContext from "../../../../store/wallet-context";
 import { create } from "ipfs-http-client";
 import LoadingContext from "../../../../store/loading-context";
+import { useToasts } from "react-toast-notifications";
 
 function EditProject() {
   const { id } = useParams();
 
+  const { addToast } = useToasts();
   const walletContext = useContext(WalletContext);
   const loadingContext = useContext(LoadingContext);
 
   const [project, setProject] = useState(null);
   const [errors, setErrors] = useState({});
-  const [submitted, setSubmitted] = useState(false);
+  const [dirty, setDirty] = useState(false);
 
   useEffect(() => {
     if (walletContext.wallet && walletContext.contract) {
@@ -32,7 +34,9 @@ function EditProject() {
   async function onSubmitHandler(e) {
     e.preventDefault();
 
-    setSubmitted(true);
+    console.log("asda");
+
+    setDirty(true);
 
     const valid = verifyFormValues();
 
@@ -81,6 +85,10 @@ function EditProject() {
         for (let i = 0; i < newlyAddedImages.length; i++) {
           await ipfs.add(newlyAddedImages[i]);
         }
+        addToast("Successfully updated project", {
+          appearance: "success",
+          autoDismiss: true,
+        });
         loadingContext.setLoading(false);
       })
       .catch((err) => {
@@ -145,6 +153,10 @@ function EditProject() {
       .cancel_project({ project_id: parseInt(id, 10) })
       .then((res) => {
         console.log(res);
+        addToast("Successfully canceled project", {
+          appearance: "success",
+          autoDismiss: true,
+        });
       });
   }
 
@@ -225,7 +237,7 @@ function EditProject() {
   }
 
   function checkErrors() {
-    if (submitted) {
+    if (dirty) {
       verifyFormValues();
     }
   }
@@ -428,7 +440,11 @@ function EditProject() {
           </div>
         </div>
         <div className="buttons">
-          <button className="btn" type="submit">
+          <button
+            className="btn"
+            type="submit"
+            disabled={loadingContext.loading}
+          >
             Update Project
           </button>
           {project.status === "Funding" && (

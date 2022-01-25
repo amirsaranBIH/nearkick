@@ -14,6 +14,7 @@ import {
   EXPLORER_URL,
 } from "./config";
 import { LoadingContextProvider } from "./store/loading-context";
+import { ToastProvider } from "react-toast-notifications";
 
 async function initWallet() {
   const config = {
@@ -52,7 +53,9 @@ initWallet().then((res) => {
     <WalletContextProvider wallet={res.wallet} contract={res.contract}>
       <LoadingContextProvider>
         <React.StrictMode>
-          <App />
+          <ToastProvider>
+            <App />
+          </ToastProvider>
         </React.StrictMode>
       </LoadingContextProvider>
     </WalletContextProvider>,
