@@ -288,6 +288,9 @@ function EditProject() {
             value={project.description}
             onInput={onDescriptionChangeHandler}
           ></textarea>
+          <p className="description-length">
+            {project.description.length}/500 characters
+          </p>
           {hasErrors("description") && (
             <span className="error-message">{getError("description")}</span>
           )}

@@ -15,15 +15,16 @@ function CreateProject() {
   const [createdProjectId, setCreatedProjectId] = useState(null);
   const [dirty, setDirty] = useState(false);
   const [projectImages, setProjectImages] = useState([]);
+  const [descriptionLength, setDescriptionLength] = useState(0);
 
-  const projectNameInputRef = useRef("");
-  const projectDescriptionInputRef = useRef("");
-  const projectGoalInputRef = useRef("");
-  const projectPlanInputRef = useRef("OneTime");
-  const projectEndDateInputRef = useRef("");
-  const projectBasicAmountInputRef = useRef("");
-  const projectIntermediateAmountInputRef = useRef("");
-  const projectAdvancedAmountInputRef = useRef("");
+  const projectNameInputRef = useRef(null);
+  const projectDescriptionInputRef = useRef(null);
+  const projectGoalInputRef = useRef(null);
+  const projectPlanInputRef = useRef(null);
+  const projectEndDateInputRef = useRef(null);
+  const projectBasicAmountInputRef = useRef(null);
+  const projectIntermediateAmountInputRef = useRef(null);
+  const projectAdvancedAmountInputRef = useRef(null);
 
   useEffect(() => {
     checkErrors();
@@ -237,8 +238,14 @@ function CreateProject() {
           <textarea
             id="description"
             ref={projectDescriptionInputRef}
-            onChange={checkErrors}
+            onChange={(e) => {
+              checkErrors(e);
+              setDescriptionLength(e.target.value.length);
+            }}
           ></textarea>
+          <p className="description-length">
+            {descriptionLength}/500 characters
+          </p>
           {hasErrors("description") && (
             <span className="error-message">{getError("description")}</span>
           )}
