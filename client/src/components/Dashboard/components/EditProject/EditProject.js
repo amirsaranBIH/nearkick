@@ -34,8 +34,6 @@ function EditProject() {
   async function onSubmitHandler(e) {
     e.preventDefault();
 
-    console.log("asda");
-
     setDirty(true);
 
     const valid = verifyFormValues();
