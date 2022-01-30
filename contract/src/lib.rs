@@ -201,9 +201,8 @@ impl Nearkick {
 
         let mut project = self.projects.get(&project_id).unwrap();
 
-        if project.status == ProjectStatus::Cancelled || project.status == ProjectStatus::Unfulfilled {
-            env::log_str(format!("Project is cancelled or unfulfilled, cannot add supporter").as_str());
-            return;
+        if project.status != ProjectStatus::Cancelled || project.status == ProjectStatus::Unfulfilled {
+            panic!("Project is cancelled or unfulfilled, cannot add supporter");
         }
 
         let supporter = Supporter {

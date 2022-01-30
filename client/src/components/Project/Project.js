@@ -107,34 +107,40 @@ function Project() {
           <p>
             <b>Status:</b> {project.status}
           </p>
-          <div className="become-supporter">
-            <h2>Become a Supporter</h2>
-            {project.supporters[walletContext.wallet.getAccountId()] ? (
-              <p>You are a supporter for this project!</p>
-            ) : (
-              <div>
-                <div className="form-group">
-                  <label htmlFor="type">Supporter Type</label>
-                  <select
-                    id="type"
-                    value={supporterLevel}
-                    onChange={onSupporterLevelChangeHandler}
+          {(project.status === "Funding" || project.status === "Funded") && (
+            <div className="become-supporter">
+              <h2>Become a Supporter</h2>
+              {project.supporters[walletContext.wallet.getAccountId()] ? (
+                <p>You are a supporter for this project!</p>
+              ) : (
+                <div>
+                  <div className="form-group">
+                    <label htmlFor="type">Supporter Type</label>
+                    <select
+                      id="type"
+                      value={supporterLevel}
+                      onChange={onSupporterLevelChangeHandler}
+                    >
+                      {Object.entries(project.level_amounts).map(
+                        ([level, amount]) => (
+                          <option key={level} value={level}>
+                            {level} - {amount} yoctoⓃ
+                          </option>
+                        )
+                      )}
+                    </select>
+                  </div>
+                  <button
+                    className="btn"
+                    type="button"
+                    onClick={supportProject}
                   >
-                    {Object.entries(project.level_amounts).map(
-                      ([level, amount]) => (
-                        <option key={level} value={level}>
-                          {level} - {amount} yoctoⓃ
-                        </option>
-                      )
-                    )}
-                  </select>
+                    Become a Supporter
+                  </button>
                 </div>
-                <button className="btn" type="button" onClick={supportProject}>
-                  Become a Supporter
-                </button>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
       <hr className="hr" />
