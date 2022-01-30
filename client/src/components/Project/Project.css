@@ -13,8 +13,12 @@
   margin-left: 2em;
 }
 
+.project-details-second p {
+  margin-bottom: 0.5em;
+}
+
 .project-supporters {
-  list-style-type: none;
+  list-style-type: square;
   padding: 1em;
 }
 
@@ -50,4 +54,12 @@
 
 .become-supporter {
   margin-top: 2em;
+}
+
+.hr {
+  margin-bottom: 1em;
+  border: 0;
+  height: 1px;
+  width: 100%;
+  background-color: #ccc;
 }

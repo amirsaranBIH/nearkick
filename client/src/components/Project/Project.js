@@ -120,11 +120,13 @@ function Project() {
                     value={supporterLevel}
                     onChange={onSupporterLevelChangeHandler}
                   >
-                    {Object.keys(project.level_amounts).map((level) => (
-                      <option key={level} value={level}>
-                        {level}
-                      </option>
-                    ))}
+                    {Object.entries(project.level_amounts).map(
+                      ([level, amount]) => (
+                        <option key={level} value={level}>
+                          {level} - {amount} yoctoⓃ
+                        </option>
+                      )
+                    )}
                   </select>
                 </div>
                 <button className="btn" type="button" onClick={supportProject}>
@@ -135,20 +137,23 @@ function Project() {
           </div>
         </div>
       </div>
-      <p>
-        <b>Supporters:</b>
-      </p>
-      <ul className="project-supporters">
-        {Object.entries(project.supporters).length > 0 ? (
-          Object.entries(project.supporters).map(([key, value]) => (
-            <li key={key} className={`project-supporter-level-${value.level}`}>
-              {key}
-            </li>
-          ))
-        ) : (
-          <div>No supporters yet.</div>
-        )}
-      </ul>
+      <hr className="hr" />
+      <div>
+        <p>
+          <b>Supporters:</b>
+        </p>
+        <ul className="project-supporters">
+          {Object.keys(project.supporters).length > 0 ? (
+            Object.entries(project.supporters).map(([key, value]) => (
+              <li key={key}>
+                {key} ({value.level} supporter)
+              </li>
+            ))
+          ) : (
+            <div>No supporters yet.</div>
+          )}
+        </ul>
+      </div>
     </div>
   );
 }

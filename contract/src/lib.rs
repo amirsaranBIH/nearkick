@@ -291,8 +291,8 @@ impl Nearkick {
     pub fn check_if_project_funded_or_unfulfilled(&mut self, project_id: u64) {
         let mut project = self.projects.get(&project_id).unwrap();
 
-        if project.owner != env::signer_account_id() {
-            panic!("Only the owner can check if project is funded or unfulfilled");
+        if project.end_time > env::block_timestamp() {
+            panic!("Project end time is in the future");
         }
 
         if project.status != ProjectStatus::Funding {
