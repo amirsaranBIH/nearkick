@@ -1,0 +1,56 @@
+.edit-project .buttons button + button {
+  margin-left: 10px;
+}
+
+.edit-project .heading {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.edit-project .heading h1 {
+  margin-right: 0.5em;
+  margin-bottom: 0;
+}
+
+.edit-project .heading .project-status {
+  color: white;
+  padding: 0.1em 0.5em;
+}
+
+.project-status.Funding {
+  background-color: var(--blue);
+}
+
+.project-status.Funded {
+  background-color: green;
+}
+
+.project-status.Cancelled {
+  background-color: var(--red);
+}
+
+.project-status.Unfulfilled {
+  background-color: brown;
+}
+
+.level-amounts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 10px;
+}
+
+.description-length {
+  text-align: right;
+}
+
+.verify-supporters {
+  margin-top: 2em;
+}
+
+.stop-scanning-btn {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+}

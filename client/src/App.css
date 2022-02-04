@@ -1,0 +1,178 @@
+.header {
+  background-color: var(--red);
+  height: var(--header-height);
+}
+
+.header .navigation-links li:nth-child(2) {
+  height: var(--header-height);
+}
+
+.header .brand-logo {
+  height: var(--header-height);
+}
+
+.header .navigation-links > ul {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--header-height);
+}
+
+.header .navigation-links > ul > li + li {
+  margin-left: 3em;
+}
+
+.header .navigation-links > ul > li a,
+.header .navigation-links > ul > li.a {
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.header .wallet-button {
+  position: relative;
+}
+
+.header .wallet-button span {
+  padding: 0.75em 1.25em;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+}
+
+.header .wallet-connect {
+  --btn-height: 50px;
+  position: absolute;
+  right: calc(var(--btn-height) / 2);
+  list-style: none;
+  top: calc((var(--header-height) / 2) - (var(--btn-height) / 2));
+}
+
+.header .wallet-connect span {
+  height: var(--btn-height);
+  display: block;
+  line-height: calc(var(--btn-height) / 2);
+}
+
+.wallet-button-dropdown {
+  list-style: none;
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background-color: #fff;
+  width: 100%;
+  border: 1px solid #ccc;
+}
+
+.wallet-button-dropdown li {
+  padding: 0.75em 1.25em;
+  cursor: pointer;
+}
+
+.wallet-button-dropdown li + li {
+  border-top: 1px solid #ccc;
+}
+
+.main {
+  max-width: 1200px;
+  min-height: calc(100vh - var(--header-height));
+  background-color: #fff;
+  margin: 0 auto;
+  padding: 2em;
+}
+
+.mobile-navigation {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  flex-direction: column;
+  align-items: end;
+}
+
+.mobile-navigation .mobile-navigation-button {
+  display: flex;
+  height: var(--header-height);
+  width: var(--header-height);
+  background-color: var(--yellow);
+  cursor: pointer;
+}
+
+.mobile-navigation .mobile-navigation-button span {
+  margin: auto;
+}
+
+.mobile-navigation .mobile-navigation-dropdown {
+  background-color: white;
+  list-style: none;
+  z-index: 10000;
+}
+
+.mobile-navigation .mobile-navigation-dropdown li {
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.mobile-navigation .mobile-navigation-dropdown li a,
+.mobile-navigation .mobile-navigation-dropdown li span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  padding: 0.75em 1.25em;
+}
+
+.loading {
+  height: 10px;
+  width: 100%;
+  background-color: var(--yellow);
+  position: fixed;
+  overflow-x: hidden;
+  top: 0;
+  left: 0;
+  z-index: 20000;
+}
+
+.loading .loading-bar {
+  height: 100%;
+  width: 20%;
+  background-color: var(--blue);
+  position: absolute;
+  animation: loading 1.5s infinite linear;
+}
+
+@keyframes loading {
+  0% {
+    left: -20%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .header .navigation-links > ul li:first-child,
+  .header .navigation-links > ul li:last-child {
+    display: none;
+  }
+
+  .header .navigation-links > ul li {
+    margin-left: 0 !important;
+  }
+
+  .header .navigation-links > ul {
+    justify-content: start;
+  }
+
+  .wallet-connect {
+    display: none;
+  }
+
+  .mobile-navigation {
+    display: flex;
+  }
+
+  .main {
+    padding: 1em;
+  }
+}
