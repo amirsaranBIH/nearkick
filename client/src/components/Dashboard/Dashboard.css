@@ -1,3 +1,7 @@
+.dashboard > div + div {
+  margin-top: 3em;
+}
+
 .dashboard-projects ul {
   list-style-type: none;
   margin: 1em 0;
@@ -33,6 +37,11 @@
 
 .dashboard-header .h1 {
   margin-bottom: 0;
+}
+
+.dashboard-no-projects a {
+  color: var(--blue);
+  text-decoration: underline;
 }
 
 @media only screen and (max-width: 992px) {

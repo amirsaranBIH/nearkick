@@ -19,6 +19,20 @@ function About() {
         project will be closed and the supporters will be notified.
       </p>
       <p>
+        Nearkick is a loosely-knit community ecosystem which seeks to replace
+        the systems which are currently in place. We provide a decentralized
+        platform to create and fund their own projects. The goal of Nearkick is
+        to create a platform that allows anyone to create and kickstart their
+        own projects and anytime someone wants to fund them.
+      </p>
+      <p>
+        Nearkick is designed for people who want to start a project, no matter
+        the purpose. Projects are found and funded on Nearkick by people on the
+        platform. Users can also contribute to the projects they are interested
+        in, which allows project creators to gain value and become more
+        successful.
+      </p>
+      <p>
         This project is a entry into the Near MetaBUILD Hackathon (
         <a
           href="https://metabuild.devpost.com"
@@ -73,8 +87,9 @@ function About() {
             <summary>What happens if a project doesn't reach its goal?</summary>
             <p>
               If the project is not funded by the marked deadline, the
-              supporters will be refunded the amount they have contributed. The
-              project will be closed and the supporters will be notified.
+              supporters will automatically be refunded the amount they have
+              contributed. The project will be closed and will no longer be
+              elegible for supporting.
             </p>
           </details>
         </div>

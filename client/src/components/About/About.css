@@ -14,3 +14,7 @@
 .faq details p {
   margin-top: 0.5em;
 }
+
+.faq summary {
+  cursor: pointer;
+}

@@ -34,7 +34,7 @@ function Dashboard() {
   }
 
   return (
-    <div>
+    <div className="dashboard">
       <div className="dashboard-header">
         <div>
           <h1 className="h1">
@@ -50,37 +50,53 @@ function Dashboard() {
         </div>
       </div>
       <div className="dashboard-projects">
+        <h2>My Projects</h2>
         <ul>
-          {projects.map((project) => (
-            <li key={project.id}>
-              <Link to={"/dashboard/edit-project/" + project.id}>
-                <div className="dashboard-project">
-                  <div className="dashboard-project-details">
-                    <div className="dashboard-project-details-first">
-                      <h2>{project.name}</h2>
-                      <p>{parseDescriptionWithDots(project.description)}</p>
-                    </div>
-                    <div className="dashboard-project-details-second">
-                      <p>
-                        <b>End Date:</b> {calculateEndDate(project.end_time)}
-                      </p>
-                      <p>
-                        <b>Owner Account:</b> {project.owner}
-                      </p>
-                      <p>
-                        <b>Progress: </b>
-                        {Math.ceil(project.balance / project.goal) * 100}%
-                      </p>
-                      <p>
-                        <b>Status:</b> {project.status}
-                      </p>
+          {projects.length > 0 &&
+            projects.map((project) => (
+              <li key={project.id}>
+                <Link to={"/dashboard/edit-project/" + project.id}>
+                  <div className="dashboard-project">
+                    <div className="dashboard-project-details">
+                      <div className="dashboard-project-details-first">
+                        <h2>{project.name}</h2>
+                        <p>{parseDescriptionWithDots(project.description)}</p>
+                      </div>
+                      <div className="dashboard-project-details-second">
+                        <p>
+                          <b>End Date:</b> {calculateEndDate(project.end_time)}
+                        </p>
+                        <p>
+                          <b>Owner Account:</b> {project.owner}
+                        </p>
+                        <p>
+                          <b>Progress: </b>
+                          {Math.ceil((project.balance / project.goal) * 100)}%
+                        </p>
+                        <p>
+                          <b>Status:</b> {project.status}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            </li>
-          ))}
+                </Link>
+              </li>
+            ))}
+          {projects.length === 0 && (
+            <div className="dashboard-no-projects">
+              No projects created. Create your first project{" "}
+              <Link to="/dashboard/create-project">here</Link>.
+            </div>
+          )}
         </ul>
+      </div>
+      <div>
+        <h2>My QR Code</h2>
+        <p>asda</p>
+      </div>
+      <div>
+        <h2>Verify Supporters</h2>
+        <p>asda</p>
       </div>
     </div>
   );

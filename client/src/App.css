@@ -106,6 +106,7 @@
 .mobile-navigation .mobile-navigation-dropdown {
   background-color: white;
   list-style: none;
+  z-index: 10000;
 }
 
 .mobile-navigation .mobile-navigation-dropdown li {
