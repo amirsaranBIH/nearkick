@@ -297,7 +297,6 @@ function EditProject() {
 
   function showQrCodeScanner() {
     setScanQrCode(true);
-    onQrReaderScan("amirsaran2.testnet");
   }
 
   function hideQrCodeScanner() {

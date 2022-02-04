@@ -75,12 +75,14 @@ function About() {
               How can I get my rewards after a project is funded?
             </summary>
             <p>
-              The project will be marked as completed. All the supporters will
-              be added to a list of supporters of the project. Later they can
-              verify that they are a supporter of the project. If the project is
-              not funded by the marked deadline, the supporters will be refunded
-              the amount they have contributed. The project will be closed and
-              the supporters will be notified.
+              If the project is a physical product, the project creator will
+              scan your QR code that is located in your dashboard. After that if
+              you are a supporter of the project you will be able to collect
+              your reward. If the project is a digital product, the project
+              creator will have a verification page that will call our contract
+              method to verify that you are a supporter of the project. After
+              that if you are a supporter of the project you will be able to
+              collect your reward.
             </p>
           </details>
           <details>

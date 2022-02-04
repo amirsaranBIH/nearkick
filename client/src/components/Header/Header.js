@@ -22,10 +22,7 @@ function Header() {
     walletContext.wallet
       .requestSignIn(CONTRACT_ADDRESS, "Nearkick")
       .then((res) => {
-        addToast("Successfully logged into wallet", {
-          appearance: "success",
-          autoDismiss: true,
-        });
+        console.log(res);
       });
   }
 
