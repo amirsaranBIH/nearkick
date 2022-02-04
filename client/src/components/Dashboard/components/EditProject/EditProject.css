@@ -43,3 +43,14 @@
 .description-length {
   text-align: right;
 }
+
+.verify-supporters {
+  margin-top: 2em;
+}
+
+.stop-scanning-btn {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+}

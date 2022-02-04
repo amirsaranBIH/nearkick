@@ -29,7 +29,7 @@ async function initWallet() {
   const near = await nearAPI.connect(config);
   const wallet = new nearAPI.WalletConnection(near, "nearkick");
   const account = wallet.account();
-  console.log(near, wallet, account);
+
   const contract = new nearAPI.Contract(account, CONTRACT_ADDRESS, {
     viewMethods: [
       "get_project",

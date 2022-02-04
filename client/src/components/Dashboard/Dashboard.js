@@ -2,6 +2,7 @@ import "./Dashboard.css";
 import { useState, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import WalletContext from "../../store/wallet-context";
+import QRCode from "react-qr-code";
 
 function Dashboard() {
   const walletContext = useContext(WalletContext);
@@ -49,6 +50,12 @@ function Dashboard() {
           </Link>
         </div>
       </div>
+      <div>
+        <h2>My QR Code</h2>
+        <div className="my-qr-code">
+          <QRCode value={walletContext.wallet.getAccountId()} />
+        </div>
+      </div>
       <div className="dashboard-projects">
         <h2>My Projects</h2>
         <ul>
@@ -89,14 +96,6 @@ function Dashboard() {
             </div>
           )}
         </ul>
-      </div>
-      <div>
-        <h2>My QR Code</h2>
-        <p>asda</p>
-      </div>
-      <div>
-        <h2>Verify Supporters</h2>
-        <p>asda</p>
       </div>
     </div>
   );

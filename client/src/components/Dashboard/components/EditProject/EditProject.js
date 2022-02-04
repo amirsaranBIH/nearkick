@@ -5,6 +5,7 @@ import WalletContext from "../../../../store/wallet-context";
 import { create } from "ipfs-http-client";
 import LoadingContext from "../../../../store/loading-context";
 import { useToasts } from "react-toast-notifications";
+import QrReader from "react-qr-reader";
 
 function EditProject() {
   const { id } = useParams();
@@ -16,6 +17,7 @@ function EditProject() {
   const [project, setProject] = useState(null);
   const [errors, setErrors] = useState({});
   const [dirty, setDirty] = useState(false);
+  const [scanQrCode, setScanQrCode] = useState(false);
 
   useEffect(() => {
     if (walletContext.wallet && walletContext.contract) {
@@ -252,6 +254,56 @@ function EditProject() {
     setProject({ ...project, images: newImages });
   }
 
+  function onQrReaderError(err) {
+    alert(err);
+  }
+
+  function onQrReaderScan(result) {
+    if (result !== null) {
+      loadingContext.setLoading(true);
+      setScanQrCode(false);
+      walletContext.contract
+        .verify_supporter_on_project({
+          project_id: parseInt(id, 10),
+          supporter_id: result,
+        })
+        .then((res) => {
+          if (res) {
+            addToast(`${result} is a supporter!`, {
+              appearance: "success",
+              autoDismiss: true,
+            });
+          } else {
+            addToast(`${result} is NOT a supporter!`, {
+              appearance: "error",
+              autoDismiss: true,
+            });
+          }
+          loadingContext.setLoading(false);
+        })
+        .catch((err) => {
+          let errorMessage = err.kind.ExecutionError;
+          if (!errorMessage) {
+            errorMessage = "Failed to verify supporter";
+          }
+          addToast(errorMessage, {
+            appearance: "error",
+            autoDismiss: true,
+          });
+          loadingContext.setLoading(false);
+        });
+    }
+  }
+
+  function showQrCodeScanner() {
+    setScanQrCode(true);
+    onQrReaderScan("amirsaran2.testnet");
+  }
+
+  function hideQrCodeScanner() {
+    setScanQrCode(false);
+  }
+
   if (!project) {
     return <div>Loading...</div>;
   }
@@ -459,6 +511,42 @@ function EditProject() {
           )}
         </div>
       </form>
+      <div className="verify-supporters">
+        <h2>Verify Supporters</h2>
+        {!scanQrCode && (
+          <button className="btn" type="button" onClick={showQrCodeScanner}>
+            Scan QR Code
+          </button>
+        )}
+        {scanQrCode && (
+          <div>
+            <button
+              className="btn stop-scanning-btn"
+              type="button"
+              onClick={hideQrCodeScanner}
+            >
+              Cancel
+            </button>
+            <QrReader
+              delay={300}
+              onError={onQrReaderError}
+              onScan={onQrReaderScan}
+              style={{
+                width: "100%",
+                position: "fixed",
+                top: 0,
+                left: 0,
+                height: "100vh",
+                backgroundColor: "black",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 }
