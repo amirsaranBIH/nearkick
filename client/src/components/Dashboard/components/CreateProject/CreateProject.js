@@ -56,7 +56,7 @@ function CreateProject() {
     const newDate =
       (new Date(projectEndDateValue).valueOf() - new Date().valueOf()) *
       1000000;
-    const date = new Date(new Date(projectEndDateValue).valueOf() - 3600000);
+    const date = new Date(new Date(projectEndDateValue).valueOf());
     const cadence = `0 ${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${
       date.getMonth() + 1
     } *`;
