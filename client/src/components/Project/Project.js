@@ -2,7 +2,7 @@ import "./Project.css";
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import WalletContext from "../../store/wallet-context";
-import { CONTRACT_ADDRESS } from "../../config";
+import { getConfig } from "../../config";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import { useToasts } from "react-toast-notifications";
@@ -28,7 +28,8 @@ function Project() {
 
   function supportProject() {
     if (!walletContext.isSignedIn) {
-      walletContext.wallet.requestSignIn(CONTRACT_ADDRESS, "Nearkick");
+      const config = getConfig(process.env.NODE_ENV);
+      walletContext.wallet.requestSignIn(config.contractAddress, "Nearkick");
     } else {
       walletContext.contract
         .add_supporter_to_project(
