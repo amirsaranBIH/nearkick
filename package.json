@@ -1,0 +1,22 @@
+{
+  "name": "nearkick",
+  "version": "1.0.0",
+  "description": "Decentralized kickstarter app using NEAR Protocol.",
+  "main": "index.js",
+  "scripts": {
+    "build:compile": "cd contract && rustup target add wasm32-unknown-unknown && cargo build --target wasm32-unknown-unknown --release",
+    "build:cpcontract": "cd contract && rm -f nearkick.wasm && cp ./target/wasm32-unknown-unknown/release/nearkick.wasm ./nearkick.wasm",
+    "build:contract": "npm run build:compile && npm run build:cpcontract",
+    "deploy:contract:dev": "npm run build:contract && near dev-deploy --wasmFile ./contract/nearkick.wasm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amirsaranBIH/nearkick.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amirsaranBIH/nearkick/issues"
+  },
+  "homepage": "https://github.com/amirsaranBIH/nearkick#readme"
+}
