@@ -1,6 +1,28 @@
-export const NETWORK_ID = "testnet";
-export const CONTRACT_ADDRESS = "contract.nearkick.testnet"; // "dev-1642545948513-63324506061378"
-export const NODE_URL = "https://rpc.testnet.near.org";
-export const WALLET_URL = "https://wallet.testnet.near.org";
-export const HELPER_URL = "https://helper.testnet.near.org";
-export const EXPLORER_URL = "https://explorer.testnet.near.org";
+const CONTRACT_ADDRESS = process.env.REACT_APP_CONTRACT_ADDRESS;
+
+export function getConfig(env) {
+  switch (env) {
+    case "notconfigured":
+      return {
+        networkId: "mainnet",
+        nodeUrl: "https://rpc.mainnet.near.org",
+        contractAddress: CONTRACT_ADDRESS,
+        walletUrl: "https://wallet.near.org",
+        helperUrl: "https://helper.mainnet.near.org",
+      };
+    case "production":
+    case "development":
+    case "test":
+      return {
+        networkId: "testnet",
+        nodeUrl: "https://rpc.testnet.near.org",
+        contractAddress: CONTRACT_ADDRESS,
+        walletUrl: "https://wallet.testnet.near.org",
+        helperUrl: "https://helper.testnet.near.org",
+      };
+    default:
+      throw Error(
+        `Unconfigured environment '${env}'. Can be configured in src/config.js.`
+      );
+  }
+}

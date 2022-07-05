@@ -1,7 +1,7 @@
 import "./Header.css";
 import { useState, useContext, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CONTRACT_ADDRESS } from "../../config";
+import { getConfig } from "../../config";
 import { useToasts } from "react-toast-notifications";
 import WalletContext from "../../store/wallet-context";
 
@@ -19,8 +19,10 @@ function Header() {
   }, [location]);
 
   function connectWalletHandler() {
+    const config = getConfig(process.env.NODE_ENV);
+
     walletContext.wallet
-      .requestSignIn(CONTRACT_ADDRESS, "Nearkick")
+      .requestSignIn(config.contractAddress, "Nearkick")
       .then((res) => {
         console.log(res);
       });
