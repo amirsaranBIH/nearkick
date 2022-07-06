@@ -95,19 +95,6 @@ impl Nearkick {
     }
 
     pub fn add_project(&mut self, goal: u128, name: String, description: String, plan: SupporterPlans, end_time: u64, cadence: String, basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) -> u64 {
-        assert!(name.len() >= 3, "Project name must be at least 3 characters");
-        assert!(name.len() <= 100, "Project name must be 100 characters or less");
-        assert!(description.len() >= 100, "Project description must be at least 100 characters");
-        assert!(description.len() <= 500, "Project description must be 500 characters or less");
-        assert!(goal >= 1, "Project goal must be at least 1");
-        assert!(plan == SupporterPlans::OneTime || plan == SupporterPlans::Recurring, "Project plan must be either OneTime or Recurring");
-        assert!(end_time > 0, "Project end date must be in the future");
-        assert!(basic_supporter_amount >= 1, "Basic supporter amount must be at least 1");
-        assert!(intermediate_supporter_amount >= 1, "Intermediate supporter amount must be at least 1");
-        assert!(advanced_supporter_amount >= 1, "Advanced supporter amount must be at least 1");
-        assert!(images.len() >= 1, "Project must have at least 1 image");
-        assert!(images.len() <= 5, "Project images must be 5 or less");
-
         self.current_id += 1;
         let project = Project {
             id: self.current_id,
@@ -127,6 +114,8 @@ impl Nearkick {
             ]),
             images
         };
+
+        self.validate_project(&project);
 
         self.projects.insert(&self.current_id, &project);
 
@@ -149,18 +138,6 @@ impl Nearkick {
     }
 
     pub fn update_project(&mut self, project_id: u64, goal: u128, name: String, description: String, plan: SupporterPlans, basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) {
-        assert!(name.len() >= 3, "Project name must be at least 3 characters");
-        assert!(name.len() <= 100, "Project name must be 100 characters or less");
-        assert!(description.len() >= 100, "Project description must be at least 100 characters");
-        assert!(description.len() <= 500, "Project description must be 500 characters or less");
-        assert!(goal >= 1, "Project goal must be at least 1");
-        assert!(plan == SupporterPlans::OneTime || plan == SupporterPlans::Recurring, "Project plan must be either OneTime or Recurring");
-        assert!(basic_supporter_amount >= 1, "Basic supporter amount must be at least 1");
-        assert!(intermediate_supporter_amount >= 1, "Intermediate supporter amount must be at least 1");
-        assert!(advanced_supporter_amount >= 1, "Advanced supporter amount must be at least 1");
-        assert!(images.len() >= 1, "Project must have at least 1 image");
-        assert!(images.len() <= 5, "Project images must be 5 or less");
-
         let project = self.projects.get(&project_id).unwrap();
 
         if project.owner != env::signer_account_id() {
@@ -186,7 +163,24 @@ impl Nearkick {
             images,
         };
 
+        self.validate_project(&new_project);
+
         self.projects.insert(&project_id, &new_project);
+    }
+
+    fn validate_project(&self, project: &Project) {
+        assert!(project.name.len() >= 3, "Project name must be at least 3 characters");
+        assert!(project.name.len() <= 100, "Project name must be 100 characters or less");
+        assert!(project.description.len() >= 100, "Project description must be at least 100 characters");
+        assert!(project.description.len() <= 500, "Project description must be 500 characters or less");
+        assert!(project.goal >= 1, "Project goal must be at least 1");
+        assert!(project.plan == SupporterPlans::OneTime || project.plan == SupporterPlans::Recurring, "Project plan must be either OneTime or Recurring");
+        assert!(project.end_time > 0, "Project end date must be in the future");
+        assert!(project.level_amounts[&SupporterType::Basic] >= 1, "Basic supporter amount must be at least 1");
+        assert!(project.level_amounts[&SupporterType::Intermediate] >= 1, "Intermediate supporter amount must be at least 1");
+        assert!(project.level_amounts[&SupporterType::Advanced] >= 1, "Advanced supporter amount must be at least 1");
+        assert!(project.images.len() >= 1, "Project must have at least 1 image");
+        assert!(project.images.len() <= 5, "Project images must be 5 or less");
     }
 
     #[payable]
@@ -391,6 +385,30 @@ mod tests {
     }
 
     #[test]
+    fn test_update_project() {
+        let context = get_context(alice(), false);
+        testing_env!(context);
+
+        let mut nearkick = Nearkick::new();
+
+        let new_project_goal_amount = 20000;
+
+        let project_id = create_project(&mut nearkick);
+        nearkick.update_project(
+            project_id,
+            new_project_goal_amount, // updated property
+            "Project name".to_string(),
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent molestie augue eu sem mollis, tincidunt.".to_string(),
+            SupporterPlans::OneTime,
+            100,
+            1000,
+            5000,
+            vec!["QmdG5NGpe9Vd4Zp5rs1hbkvsgC5makB1KUSRvV6vaqVyt4".to_string()],
+        );
+        assert_eq!(nearkick.projects.get(&project_id).unwrap().goal, new_project_goal_amount);
+    }
+
+    #[test]
     fn test_add_supporter_to_project() {
         let mut context = get_context(alice(), false);
         context.attached_deposit = 100;
@@ -428,6 +446,49 @@ mod tests {
         assert_eq!(nearkick.projects.get(&project_id).unwrap().status, ProjectStatus::Cancelled);
     }
 
+    // #[test]
+    // fn test_check_if_project_funded_or_unfulfilled() {
+    //     let context = get_context(alice(), false);
+    //     testing_env!(context);
+
+    //     let mut nearkick = Nearkick::new();
+
+    //     let project_id = create_project(&mut nearkick);
+    //     nearkick.check_if_project_funded_or_unfulfilled(project_id);
+    //     assert_eq!(nearkick.projects.get(&project_id).unwrap().status, ProjectStatus::Unfulfilled);
+    // }
+
+    #[test]
+    fn test_get_supporter_level_amount() {
+        let context = get_context(alice(), false);
+        testing_env!(context);
+
+        let created_project_basic_amount = 100;
+
+        let mut nearkick = Nearkick::new();
+
+        let project_id = create_project(&mut nearkick);
+        let amount = nearkick.get_supporter_level_amount(&project_id, &SupporterType::Basic);
+        assert_eq!(amount, created_project_basic_amount);
+    }
+
+    #[test]
+    fn test_refund_supporters() {
+        let mut context = get_context(alice(), false);
+        context.attached_deposit = 100;
+        testing_env!(context);
+
+        let mut nearkick = Nearkick::new();
+
+        let project_id = create_project(&mut nearkick);
+        nearkick.add_supporter_to_project(project_id, SupporterType::Basic);
+        let project = nearkick.get_project(project_id);
+        assert_eq!(project.balance, 100);
+        nearkick.refund_supporters(project_id);
+        let project = nearkick.get_project(project_id);
+        assert_eq!(project.balance, 0);
+    }
+
     #[test]
     fn test_get_all_projects() {
         let context = get_context(alice(), false);
@@ -437,6 +498,18 @@ mod tests {
 
         create_project(&mut nearkick);
         let projects = nearkick.get_all_projects();
+        assert_eq!(projects.len(), 1);
+    }
+
+    #[test]
+    fn test_get_all_projects_by_owner() {
+        let context = get_context(alice(), false);
+        testing_env!(context);
+
+        let mut nearkick = Nearkick::new();
+
+        create_project(&mut nearkick);
+        let projects = nearkick.get_all_projects_by_owner(alice());
         assert_eq!(projects.len(), 1);
     }
 
