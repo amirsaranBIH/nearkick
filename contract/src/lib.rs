@@ -201,8 +201,8 @@ impl Nearkick {
 
         let mut project = self.projects.get(&project_id).unwrap();
 
-        if project.status != ProjectStatus::Cancelled || project.status == ProjectStatus::Unfulfilled {
-            panic!("Project is cancelled or unfulfilled, cannot add supporter");
+        if project.status != ProjectStatus::Funding {
+            panic!("Project needs to be of status (Funding), cannot verify supporter");
         }
 
         let supporter = Supporter {
@@ -325,64 +325,130 @@ impl Nearkick {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use near_sdk::test_utils::{VMContextBuilder};
-    use near_sdk::{testing_env, AccountId};
+    use near_sdk::test_utils::VMContextBuilder;
+    use near_sdk::{testing_env, VMContext};
 
-    fn get_context(predecessor: AccountId) -> VMContextBuilder {
-        let mut builder = VMContextBuilder::new();
-        builder.predecessor_account_id(predecessor);
-        builder
+    fn get_context(signer_account_id: AccountId,  is_view: bool) -> VMContext {
+        VMContextBuilder::new()
+            .signer_account_id(signer_account_id)
+            .is_view(is_view)
+            .build()
+    }
+
+    fn alice() -> AccountId {
+        "alice".parse().unwrap()
+    }
+
+    fn get_project_mock_data() -> Project {
+        Project {
+            id: 1,
+            owner: env::signer_account_id(),
+            name: "Project name".to_string(),
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent molestie augue eu sem mollis, tincidunt.".to_string(),
+            supporters: HashMap::new(),
+            balance: 0,
+            goal: 10000,
+            end_time: env::block_timestamp() + 100,
+            status: ProjectStatus::Funding,
+            plan: SupporterPlans::OneTime,
+            level_amounts: HashMap::from([
+                (SupporterType::Basic, 100),
+                (SupporterType::Intermediate, 1000),
+                (SupporterType::Advanced, 5000),
+            ]),
+            images: vec!["QmdG5NGpe9Vd4Zp5rs1hbkvsgC5makB1KUSRvV6vaqVyt4".to_string()]
+        }
+    }
+
+    fn create_project(contract: &mut Nearkick) -> u64 {
+        let mock_data = get_project_mock_data();
+
+        let project_id = contract.add_project(
+            mock_data.goal,
+            mock_data.name,
+            mock_data.description,
+            mock_data.plan,
+            mock_data.end_time,
+            "0 30 23 * * *".to_string(),
+            mock_data.level_amounts[&SupporterType::Basic],
+            mock_data.level_amounts[&SupporterType::Intermediate],
+            mock_data.level_amounts[&SupporterType::Advanced],
+            mock_data.images
+        );
+
+        project_id
     }
 
     #[test]
     fn test_add_project() {
+        let context = get_context(alice(), false);
+        testing_env!(context);
+
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(), 10000000, 10000000000, 10000000000000, Vec::new());
-        assert_eq!(nearkick.projects.get(&project_id).unwrap().goal, 1000);
+
+        let project_id = create_project(&mut nearkick);
+        assert_eq!(nearkick.projects.get(&project_id).unwrap().id, project_id);
     }
 
     #[test]
     fn test_add_supporter_to_project() {
+        let mut context = get_context(alice(), false);
+        context.attached_deposit = 100;
+        testing_env!(context);
+
         let mut nearkick = Nearkick::new();
 
-        let alice = AccountId::new_unchecked("alice.testnet".to_string());
-        let context = get_context(alice);
-        testing_env!(context.build());
-
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
+        let project_id = create_project(&mut nearkick);
         nearkick.add_supporter_to_project(project_id, SupporterType::Basic);
-        assert_eq!(nearkick.projects.get(&project_id).unwrap().balance, 0);
+        assert_eq!(nearkick.projects.get(&project_id).unwrap().balance, 100);
     }
 
     #[test]
     fn test_verify_supporter_on_project() {
+        let mut context = get_context(alice(), false);
+        context.attached_deposit = 10000; // depositing 10000 to fund whole goal
+        testing_env!(context);
+
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
+
+        let project_id = create_project(&mut nearkick);
         nearkick.add_supporter_to_project(project_id, SupporterType::Basic);
-        assert_eq!(nearkick.verify_supporter_on_project(project_id, AccountId::new_unchecked("supporter".to_string())), true);
+        assert_eq!(nearkick.verify_supporter_on_project(project_id, alice()), true);
     }
 
     #[test]
     fn test_cancel_project() {
+        let context = get_context(alice(), false);
+        testing_env!(context);
+
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
+
+        let project_id = create_project(&mut nearkick);
         nearkick.cancel_project(project_id);
         assert_eq!(nearkick.projects.get(&project_id).unwrap().status, ProjectStatus::Cancelled);
     }
 
     #[test]
     fn test_get_all_projects() {
+        let context = get_context(alice(), false);
+        testing_env!(context);
+
         let mut nearkick = Nearkick::new();
-        nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
+
+        create_project(&mut nearkick);
         let projects = nearkick.get_all_projects();
         assert_eq!(projects.len(), 1);
     }
 
     #[test]
     fn test_get_project() {
+        let context = get_context(alice(), false);
+        testing_env!(context);
+
         let mut nearkick = Nearkick::new();
-        let project_id = nearkick.add_project(1000, "name".to_string(), "description".to_string(), SupporterPlans::OneTime, 100, "0 30 23 * * *".to_string(),10000000, 10000000000, 10000000000000, Vec::new());
+
+        let project_id = create_project(&mut nearkick);
         let project = nearkick.get_project(project_id);
-        assert_eq!(project.goal, 1000);
+        assert_eq!(project.id, project_id);
     }
 }
