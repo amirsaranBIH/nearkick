@@ -446,17 +446,25 @@ mod tests {
         assert_eq!(nearkick.projects.get(&project_id).unwrap().status, ProjectStatus::Cancelled);
     }
 
-    // #[test]
-    // fn test_check_if_project_funded_or_unfulfilled() {
-    //     let context = get_context(alice(), false);
-    //     testing_env!(context);
+    #[test]
+    fn test_check_if_project_funded_or_unfulfilled() {
+        let context = get_context(alice(), false);
+        testing_env!(context);
 
-    //     let mut nearkick = Nearkick::new();
+        let mut nearkick = Nearkick::new();
 
-    //     let project_id = create_project(&mut nearkick);
-    //     nearkick.check_if_project_funded_or_unfulfilled(project_id);
-    //     assert_eq!(nearkick.projects.get(&project_id).unwrap().status, ProjectStatus::Unfulfilled);
-    // }
+        let project_id = create_project(&mut nearkick);
+
+        // set end_time to current timestamp to bypass asserts in check
+        let mut project = nearkick.get_project(project_id);
+        project.end_time = env::block_timestamp();
+        nearkick.projects.insert(&project_id, &project);
+
+        assert_eq!(project.status, ProjectStatus::Funding);
+        nearkick.check_if_project_funded_or_unfulfilled(project_id);
+        let project = nearkick.get_project(project_id);
+        assert_eq!(project.status, ProjectStatus::Unfulfilled);
+    }
 
     #[test]
     fn test_get_supporter_level_amount() {
