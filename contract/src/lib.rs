@@ -1,9 +1,9 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::collections::{UnorderedMap};
+use near_sdk::collections::UnorderedMap;
+use near_sdk::json_types::U128;
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::serde_json::json;
-use near_sdk::{env, near_bindgen, AccountId, Promise, PanicOnDefault, ext_contract, Gas, base64};
-use near_sdk::json_types::U128;
+use near_sdk::{base64, env, ext_contract, near_bindgen, AccountId, Gas, PanicOnDefault, Promise};
 use std::collections::HashMap;
 
 #[ext_contract(ext_croncat)]
@@ -38,7 +38,19 @@ pub enum ProjectStatus {
     Unfulfilled,
 }
 
-#[derive(Clone, Copy, Hash, Eq, PartialEq, PartialOrd, Serialize, Deserialize, BorshDeserialize, BorshSerialize, Debug)]
+#[derive(
+    Clone,
+    Copy,
+    Hash,
+    Eq,
+    PartialEq,
+    PartialOrd,
+    Serialize,
+    Deserialize,
+    BorshDeserialize,
+    BorshSerialize,
+    Debug,
+)]
 #[serde(crate = "near_sdk::serde")]
 pub enum SupporterType {
     Basic,
@@ -94,7 +106,19 @@ impl Nearkick {
         }
     }
 
-    pub fn add_project(&mut self, goal: u128, name: String, description: String, plan: SupporterPlans, end_time: u64, cadence: String, basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) -> u64 {
+    pub fn add_project(
+        &mut self,
+        goal: u128,
+        name: String,
+        description: String,
+        plan: SupporterPlans,
+        end_time: u64,
+        cadence: String,
+        basic_supporter_amount: u128,
+        intermediate_supporter_amount: u128,
+        advanced_supporter_amount: u128,
+        images: Vec<String>,
+    ) -> u64 {
         self.current_id += 1;
         let project = Project {
             id: self.current_id,
@@ -112,7 +136,7 @@ impl Nearkick {
                 (SupporterType::Intermediate, intermediate_supporter_amount),
                 (SupporterType::Advanced, advanced_supporter_amount),
             ]),
-            images
+            images,
         };
 
         self.validate_project(&project);
@@ -126,9 +150,12 @@ impl Nearkick {
             Some(false),
             Some(U128::from(0)),
             Some(30_000_000_000_000), // 30 Tgas
-            Some(base64::encode(json!({
-                "project_id": self.current_id,
-            }).to_string())),
+            Some(base64::encode(
+                json!({
+                    "project_id": self.current_id,
+                })
+                .to_string(),
+            )),
             AccountId::new_unchecked("manager_v1.croncat.testnet".to_string()),
             3_500_000_000_000_000_000_000,
             Gas::from(25_000_000_000_000),
@@ -137,11 +164,22 @@ impl Nearkick {
         self.current_id
     }
 
-    pub fn update_project(&mut self, project_id: u64, goal: u128, name: String, description: String, plan: SupporterPlans, basic_supporter_amount: u128, intermediate_supporter_amount: u128, advanced_supporter_amount: u128, images: Vec<String>) {
+    pub fn update_project(
+        &mut self,
+        project_id: u64,
+        goal: u128,
+        name: String,
+        description: String,
+        plan: SupporterPlans,
+        basic_supporter_amount: u128,
+        intermediate_supporter_amount: u128,
+        advanced_supporter_amount: u128,
+        images: Vec<String>,
+    ) {
         let project = self.projects.get(&project_id).unwrap();
 
         if project.owner != env::signer_account_id() {
-            panic!("Only the owner can update the project");
+            env::panic_str("Only the owner can update the project");
         }
 
         let new_project = Project {
@@ -169,18 +207,59 @@ impl Nearkick {
     }
 
     fn validate_project(&self, project: &Project) {
-        assert!(project.name.len() >= 3, "Project name must be at least 3 characters");
-        assert!(project.name.len() <= 100, "Project name must be 100 characters or less");
-        assert!(project.description.len() >= 100, "Project description must be at least 100 characters");
-        assert!(project.description.len() <= 500, "Project description must be 500 characters or less");
-        assert!(project.goal >= 1, "Project goal must be at least 1");
-        assert!(project.plan == SupporterPlans::OneTime || project.plan == SupporterPlans::Recurring, "Project plan must be either OneTime or Recurring");
-        assert!(project.end_time > 0, "Project end date must be in the future");
-        assert!(project.level_amounts[&SupporterType::Basic] >= 1, "Basic supporter amount must be at least 1");
-        assert!(project.level_amounts[&SupporterType::Intermediate] >= 1, "Intermediate supporter amount must be at least 1");
-        assert!(project.level_amounts[&SupporterType::Advanced] >= 1, "Advanced supporter amount must be at least 1");
-        assert!(project.images.len() >= 1, "Project must have at least 1 image");
-        assert!(project.images.len() <= 5, "Project images must be 5 or less");
+        let mut error_messages = Vec::new();
+
+        if project.name.len() < 3 {
+            error_messages.push("Project name must be at least 3 characters");
+        }
+
+        if project.name.len() > 100 {
+            error_messages.push("Project name must be 100 characters or less");
+        }
+
+        if project.description.len() < 100 {
+            error_messages.push("Project description must be at least 100 characters");
+        }
+
+        if project.description.len() > 500 {
+            error_messages.push("Project description must be 500 characters or less");
+        }
+
+        if project.goal < 1 {
+            error_messages.push("Project goal must be at least 1");
+        }
+
+        if project.plan != SupporterPlans::OneTime && project.plan != SupporterPlans::Recurring {
+            error_messages.push("Project plan must be either OneTime or Recurring");
+        }
+
+        if project.end_time < 1 {
+            error_messages.push("Project end date must be in the future");
+        }
+
+        if project.level_amounts[&SupporterType::Basic] < 1 {
+            error_messages.push("Basic supporter amount must be at least 1");
+        }
+
+        if project.level_amounts[&SupporterType::Intermediate] < 1 {
+            error_messages.push("Intermediate supporter amount must be at least 1");
+        }
+
+        if project.level_amounts[&SupporterType::Advanced] < 1 {
+            error_messages.push("Advanced supporter amount must be at least 1");
+        }
+
+        if project.images.len() < 1 {
+            error_messages.push("Project must have at least 1 image");
+        }
+
+        if project.images.len() > 5 {
+            error_messages.push("Project images must be 5 or less");
+        }
+
+        if error_messages.len() > 0 {
+            env::panic_str(error_messages.join(", ").as_str());
+        }
     }
 
     #[payable]
@@ -188,22 +267,29 @@ impl Nearkick {
         let supporter_amount_needed = self.get_supporter_level_amount(&project_id, &level);
         let attached_deposit = env::attached_deposit();
 
-        assert!(
-            attached_deposit >= supporter_amount_needed,
-            "Not enough attached deposit: Needed: {}, Attached: {}", supporter_amount_needed, attached_deposit
-        );
+        if attached_deposit < supporter_amount_needed {
+            env::panic_str(
+                format!(
+                    "Not enough attached deposit: Needed: {}, Attached: {}",
+                    supporter_amount_needed, attached_deposit
+                )
+                .as_str(),
+            );
+        }
 
         let mut project = self.projects.get(&project_id).unwrap();
 
         if project.status != ProjectStatus::Funding {
-            panic!("Project needs to be of status (Funding), cannot verify supporter");
+            env::panic_str("Project needs to be of status (Funding), cannot verify supporter");
         }
 
         let supporter = Supporter {
             level,
             used_verification: false,
         };
-        project.supporters.insert(env::signer_account_id(), supporter);
+        project
+            .supporters
+            .insert(env::signer_account_id(), supporter);
         project.balance += attached_deposit;
         if project.balance >= project.goal {
             project.status = ProjectStatus::Funded;
@@ -213,25 +299,31 @@ impl Nearkick {
         Promise::new(project.owner).transfer(attached_deposit);
     }
 
-    pub fn verify_supporter_on_project(&mut self, project_id: u64, supporter_id: AccountId) -> bool {
+    pub fn verify_supporter_on_project(
+        &mut self,
+        project_id: u64,
+        supporter_id: AccountId,
+    ) -> bool {
         let mut project = self.projects.get(&project_id).unwrap();
 
-        if project.status == ProjectStatus::Cancelled || project.status == ProjectStatus::Unfulfilled {
-            panic!("Project is cancelled or unfulfilled, cannot verify supporter");
+        if project.status == ProjectStatus::Cancelled
+            || project.status == ProjectStatus::Unfulfilled
+        {
+            env::panic_str("Project is cancelled or unfulfilled, cannot verify supporter");
         }
 
         if project.status != ProjectStatus::Funded {
-            panic!("Project is not funded, cannot verify supporter");
+            env::panic_str("Project is not funded, cannot verify supporter");
         }
 
         let supporter = project.supporters.get(&supporter_id).unwrap().clone();
 
         if !project.supporters.contains_key(&supporter_id) {
-            panic!("{} is not a supporter of this project", supporter_id);
+            env::panic_str(format!("{} is not a supporter of this project", supporter_id).as_str());
         }
-        
+
         if project.plan == SupporterPlans::OneTime && supporter.used_verification {
-            panic!("Supporter already used verification code");
+            env::panic_str("Supporter already used verification code");
         }
 
         let new_supporter = Supporter {
@@ -269,11 +361,11 @@ impl Nearkick {
         let mut project = self.projects.get(&project_id).unwrap();
 
         if project.owner != env::signer_account_id() {
-            panic!("Only the owner can cancel the project");
+            env::panic_str("Only the owner can cancel the project");
         }
 
         if project.status != ProjectStatus::Funding {
-            panic!("Project must be in Funding status to be cancelled");
+            env::panic_str("Project must be in Funding status to be cancelled");
         }
 
         project.status = ProjectStatus::Cancelled;
@@ -285,11 +377,13 @@ impl Nearkick {
         let mut project = self.projects.get(&project_id).unwrap();
 
         if project.end_time > env::block_timestamp() {
-            panic!("Project end time is in the future");
+            env::panic_str("Project end time is in the future");
         }
 
         if project.status != ProjectStatus::Funding {
-            panic!("Project must be in Funding status to be checked if funded or unfulfilled");
+            env::panic_str(
+                "Project must be in Funding status to be checked if funded or unfulfilled",
+            );
         }
 
         if project.goal > project.balance {
@@ -309,7 +403,6 @@ impl Nearkick {
         for supporter in project.supporters.iter() {
             let amount = self.get_supporter_level_amount(&project_id, &supporter.1.level);
             Promise::new(supporter.0.clone()).transfer(amount);
-
         }
         project.balance = 0;
         self.projects.insert(&project_id, &project);
@@ -322,7 +415,7 @@ mod tests {
     use near_sdk::test_utils::VMContextBuilder;
     use near_sdk::{testing_env, VMContext};
 
-    fn get_context(signer_account_id: AccountId,  is_view: bool) -> VMContext {
+    fn get_context(signer_account_id: AccountId, is_view: bool) -> VMContext {
         VMContextBuilder::new()
             .signer_account_id(signer_account_id)
             .is_view(is_view)
@@ -350,7 +443,7 @@ mod tests {
                 (SupporterType::Intermediate, 1000),
                 (SupporterType::Advanced, 5000),
             ]),
-            images: vec!["QmdG5NGpe9Vd4Zp5rs1hbkvsgC5makB1KUSRvV6vaqVyt4".to_string()]
+            images: vec!["QmdG5NGpe9Vd4Zp5rs1hbkvsgC5makB1KUSRvV6vaqVyt4".to_string()],
         }
     }
 
@@ -367,7 +460,7 @@ mod tests {
             mock_data.level_amounts[&SupporterType::Basic],
             mock_data.level_amounts[&SupporterType::Intermediate],
             mock_data.level_amounts[&SupporterType::Advanced],
-            mock_data.images
+            mock_data.images,
         );
 
         project_id
@@ -405,7 +498,10 @@ mod tests {
             5000,
             vec!["QmdG5NGpe9Vd4Zp5rs1hbkvsgC5makB1KUSRvV6vaqVyt4".to_string()],
         );
-        assert_eq!(nearkick.projects.get(&project_id).unwrap().goal, new_project_goal_amount);
+        assert_eq!(
+            nearkick.projects.get(&project_id).unwrap().goal,
+            new_project_goal_amount
+        );
     }
 
     #[test]
@@ -431,7 +527,10 @@ mod tests {
 
         let project_id = create_project(&mut nearkick);
         nearkick.add_supporter_to_project(project_id, SupporterType::Basic);
-        assert_eq!(nearkick.verify_supporter_on_project(project_id, alice()), true);
+        assert_eq!(
+            nearkick.verify_supporter_on_project(project_id, alice()),
+            true
+        );
     }
 
     #[test]
@@ -443,7 +542,10 @@ mod tests {
 
         let project_id = create_project(&mut nearkick);
         nearkick.cancel_project(project_id);
-        assert_eq!(nearkick.projects.get(&project_id).unwrap().status, ProjectStatus::Cancelled);
+        assert_eq!(
+            nearkick.projects.get(&project_id).unwrap().status,
+            ProjectStatus::Cancelled
+        );
     }
 
     #[test]
