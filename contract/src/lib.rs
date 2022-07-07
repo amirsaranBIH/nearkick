@@ -141,7 +141,7 @@ impl Nearkick {
 
         self.validate_project(&project);
 
-        self.projects.insert(&self.current_id, &project);
+        self.projects.insert(&project.id, &project);
 
         ext_croncat::create_task(
             env::current_account_id(),
@@ -161,7 +161,7 @@ impl Nearkick {
             Gas::from(25_000_000_000_000),
         );
 
-        self.current_id
+        project.id
     }
 
     pub fn update_project(
@@ -280,7 +280,7 @@ impl Nearkick {
         let mut project = self.projects.get(&project_id).unwrap();
 
         if project.status != ProjectStatus::Funding {
-            env::panic_str("Project needs to be of status (Funding), cannot verify supporter");
+            env::panic_str("Project needs to be of status (Funding), cannot add supporter");
         }
 
         let supporter = Supporter {
