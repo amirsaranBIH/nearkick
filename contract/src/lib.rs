@@ -299,6 +299,31 @@ impl Nearkick {
         Promise::new(project.owner).transfer(attached_deposit)
     }
 
+    pub fn remove_supporter_from_project(&mut self, project_id: u64) -> near_sdk::Promise {
+        let mut project = self.projects.get(&project_id).unwrap();
+
+        if project.status != ProjectStatus::Funding {
+            env::panic_str("An account can only be removed if project has status (Funding)");
+        }
+
+        let account_id = env::signer_account_id();
+
+        let supporter = project.supporters.get(&account_id);
+
+        if supporter.is_none() {
+            env::panic_str("Account not supporting project");
+        }
+
+        let supported_amount = project.level_amounts[&supporter.unwrap().level];
+
+        project.balance -= supported_amount;
+        project.supporters.remove(&account_id);
+
+        self.projects.insert(&project_id, &project);
+
+        Promise::new(account_id).transfer(supported_amount)
+    }
+
     pub fn verify_supporter_on_project(
         &mut self,
         project_id: u64,
@@ -517,6 +542,21 @@ mod tests {
         let project_id = create_project(&mut nearkick);
         nearkick.add_supporter_to_project(project_id, SupporterType::Basic);
         assert_eq!(nearkick.projects.get(&project_id).unwrap().balance, 100);
+    }
+
+    #[test]
+    fn test_remove_supporter_from_project() {
+        let mut context = get_context(alice(), false);
+        context.attached_deposit = 100;
+        testing_env!(context);
+
+        let mut nearkick = Nearkick::new();
+
+        let project_id = create_project(&mut nearkick);
+        nearkick.add_supporter_to_project(project_id, SupporterType::Basic);
+        assert_eq!(nearkick.projects.get(&project_id).unwrap().supporters.len(), 1);
+        nearkick.remove_supporter_from_project(project_id);
+        assert_eq!(nearkick.projects.get(&project_id).unwrap().supporters.len(), 0);
     }
 
     #[test]
