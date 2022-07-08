@@ -263,7 +263,7 @@ impl Nearkick {
     }
 
     #[payable]
-    pub fn add_supporter_to_project(&mut self, project_id: u64, level: SupporterType) {
+    pub fn add_supporter_to_project(&mut self, project_id: u64, level: SupporterType) -> near_sdk::Promise {
         let supporter_amount_needed = self.get_supporter_level_amount(&project_id, &level);
         let attached_deposit = env::attached_deposit();
 
@@ -296,7 +296,7 @@ impl Nearkick {
         }
         self.projects.insert(&project_id, &project);
 
-        Promise::new(project.owner).transfer(attached_deposit);
+        Promise::new(project.owner).transfer(attached_deposit)
     }
 
     pub fn verify_supporter_on_project(
@@ -398,14 +398,16 @@ impl Nearkick {
         project.level_amounts[&level]
     }
 
-    fn refund_supporters(&mut self, project_id: u64) {
+    fn refund_supporters(&mut self, project_id: u64) -> Vec<near_sdk::Promise> {
+        let mut transfer_promises = Vec::new();
         let mut project = self.projects.get(&project_id).unwrap();
         for supporter in project.supporters.iter() {
             let amount = self.get_supporter_level_amount(&project_id, &supporter.1.level);
-            Promise::new(supporter.0.clone()).transfer(amount);
+            transfer_promises.push(Promise::new(supporter.0.clone()).transfer(amount));
         }
         project.balance = 0;
         self.projects.insert(&project_id, &project);
+        transfer_promises
     }
 }
 
