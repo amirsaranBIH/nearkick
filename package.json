@@ -9,7 +9,8 @@
     "build:contract": "npm run build:compile && npm run build:cpcontract",
     "deploy:setenv": "bash create_contract_env.sh > ./client/.env.development",
     "deploy:contract:dev": "npm run build:contract && near dev-deploy --wasmFile ./contract/nearkick.wasm --initFunction new --initArgs '{}' && npm run deploy:setenv && rm -r -f neardev",
-    "contract:test": "cd contract && cargo test"
+    "contract:test": "cd contract && cargo test",
+    "client:test": "cd client && npm test"
   },
   "repository": {
     "type": "git",

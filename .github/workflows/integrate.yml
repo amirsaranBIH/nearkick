@@ -13,3 +13,4 @@ jobs:
         with:
           node-version: 12
       - run: npm run contract:test
+      - run: npm run client:test
