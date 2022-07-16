@@ -25,6 +25,11 @@ function CreateProject() {
   const projectIntermediateAmountInputRef = useRef(null);
   const projectAdvancedAmountInputRef = useRef(null);
 
+  const [goalInNear, setGoalInNear] = useState("0");
+  const [basicAmountInNear, setBasicAmountInNear] = useState("0");
+  const [intermediateAmountInNear, setIntermediateAmountInNear] = useState("0");
+  const [advancedAmountInNear, setAdvancedAmountInNear] = useState("0");
+
   useEffect(() => {
     checkErrors();
   }, [projectImages]);
@@ -80,15 +85,15 @@ function CreateProject() {
     walletContext.contract
       .add_project(
         {
-          goal: Number(projectGoalValue),
+          goal: projectGoalValue,
           name: projectNameValue,
           description: projectDescriptionValue,
           plan: projectPlanValue,
           end_time: newDate,
           cadence,
-          basic_supporter_amount: Number(projectBasicAmountValue),
-          intermediate_supporter_amount: Number(projectIntermediateAmountValue),
-          advanced_supporter_amount: Number(projectAdvancedAmountValue),
+          basic_supporter_amount: projectBasicAmountValue,
+          intermediate_supporter_amount: projectIntermediateAmountValue,
+          advanced_supporter_amount: projectAdvancedAmountValue,
           images: imageCids,
         },
         300000000000000
@@ -205,6 +210,36 @@ function CreateProject() {
     }
   }
 
+  function onGoalInputChange() {
+    checkErrors();
+    setGoalInNear(
+      utils.format.formatNearAmount(projectGoalInputRef.current.value)
+    );
+  }
+
+  function onBasicLevelInputChange() {
+    checkErrors();
+    setBasicAmountInNear(
+      utils.format.formatNearAmount(projectBasicAmountInputRef.current.value)
+    );
+  }
+
+  function onIntermediateLevelInputChange() {
+    checkErrors();
+    setIntermediateAmountInNear(
+      utils.format.formatNearAmount(
+        projectIntermediateAmountInputRef.current.value
+      )
+    );
+  }
+
+  function onAdvancedLevelInputChange() {
+    checkErrors();
+    setAdvancedAmountInNear(
+      utils.format.formatNearAmount(projectAdvancedAmountInputRef.current.value)
+    );
+  }
+
   if (createdProjectId) {
     return <Navigate to={`/dashboard/edit-project/${createdProjectId}`} />;
   }
@@ -247,12 +282,12 @@ function CreateProject() {
           )}
         </div>
         <div className={`form-group ${hasErrors("goal") ? "input-error" : ""}`}>
-          <label htmlFor="goal">Goal (in yoctoⓃ)</label>
+          <label htmlFor="goal">Goal ({goalInNear}Ⓝ)</label>
           <input
             type="number"
             id="goal"
             ref={projectGoalInputRef}
-            onChange={checkErrors}
+            onChange={onGoalInputChange}
           />
           {hasErrors("goal") && (
             <span className="error-message">{getError("goal")}</span>
@@ -332,12 +367,14 @@ function CreateProject() {
                 hasErrors("basicAmount") ? "input-error" : ""
               }`}
             >
-              <label htmlFor="basic-level">Basic Level (in yoctoⓃ)</label>
+              <label htmlFor="basic-level">
+                Basic Level ({basicAmountInNear}Ⓝ)
+              </label>
               <input
                 type="number"
                 id="basic-level"
                 ref={projectBasicAmountInputRef}
-                onChange={checkErrors}
+                onChange={onBasicLevelInputChange}
               />
               {hasErrors("basicAmount") && (
                 <span className="error-message">{getError("basicAmount")}</span>
@@ -349,15 +386,15 @@ function CreateProject() {
               }`}
             >
               <label htmlFor="intermediate-level">
-                Intermediate Level (in yoctoⓃ)
+                Intermediate Level ({intermediateAmountInNear}Ⓝ)
               </label>
               <input
                 type="number"
                 id="intermediate-level"
                 ref={projectIntermediateAmountInputRef}
-                onChange={checkErrors}
+                onChange={onIntermediateLevelInputChange}
               />
-              {hasErrors("basicAmount") && (
+              {hasErrors("intermediateAmount") && (
                 <span className="error-message">
                   {getError("intermediateAmount")}
                 </span>
@@ -368,12 +405,14 @@ function CreateProject() {
                 hasErrors("advancedAmount") ? "input-error" : ""
               }`}
             >
-              <label htmlFor="advanced-level">Advanced Level (in yoctoⓃ)</label>
+              <label htmlFor="advanced-level">
+                Advanced Level ({advancedAmountInNear}Ⓝ)
+              </label>
               <input
                 type="number"
                 id="advanced-level"
                 ref={projectAdvancedAmountInputRef}
-                onChange={checkErrors}
+                onChange={onAdvancedLevelInputChange}
               />
               {hasErrors("advancedAmount") && (
                 <span className="error-message">

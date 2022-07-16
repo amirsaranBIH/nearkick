@@ -27,6 +27,7 @@ export async function initWallet() {
       "add_project",
       "update_project",
       "add_supporter_to_project",
+      "remove_supporter_from_project",
       "cancel_project",
       "verify_supporter_on_project",
     ],
