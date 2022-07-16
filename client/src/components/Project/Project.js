@@ -54,6 +54,20 @@ function Project() {
     setSupporterLevel(event.target.value);
   }
 
+  function removeFromProject() {
+    walletContext.contract
+      .remove_supporter_from_project({
+        project_id: parseInt(id, 10),
+      })
+      .then((res) => {
+        console.log(res);
+        addToast("Successfully removed yourself from project", {
+          appearance: "success",
+          autoDismiss: true,
+        });
+      });
+  }
+
   if (!project) {
     return <div>Loading...</div>;
   }
@@ -106,11 +120,20 @@ function Project() {
           </p>
           {(project.status === "Funding" || project.status === "Funded") && (
             <div className="become-supporter">
-              <h2>Become a Supporter</h2>
               {project.supporters[walletContext.wallet.getAccountId()] ? (
-                <p>You are a supporter for this project!</p>
+                <div>
+                  <p>You are a supporter for this project!</p>
+                  <button
+                    className="btn btn--red"
+                    type="button"
+                    onClick={removeFromProject}
+                  >
+                    Remove yourself from project
+                  </button>
+                </div>
               ) : (
                 <div>
+                  <h2>Become a Supporter</h2>
                   <div className="form-group">
                     <label htmlFor="type">Supporter Type</label>
                     <select
