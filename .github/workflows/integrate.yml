@@ -5,12 +5,18 @@ on:
     branches: [main, dev]
 
 jobs:
-  test_pull_request:
+  test_contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm run contract:test
+  test_client:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: npm run contract:test
-      - run: npm run client:test
+      - run: cd client
+      - run: npm i
+      - run: npm test
