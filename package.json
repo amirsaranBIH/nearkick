@@ -8,8 +8,7 @@
     "build:cpcontract": "cd contract && rm -f nearkick.wasm && cp ./target/wasm32-unknown-unknown/release/nearkick.wasm ./nearkick.wasm",
     "build:contract": "npm run build:compile && npm run build:cpcontract",
     "deploy:setenv": "bash create_contract_env.sh > ./client/.env.development",
-    "deploy:contract:dev": "npm run build:contract && near dev-deploy --wasmFile ./contract/nearkick.wasm --initFunction new --initArgs '{}' && npm run deploy:setenv && rm -r -f neardev",
-    "contract:test": "cd contract && cargo test"
+    "deploy:contract:dev": "npm run build:contract && near dev-deploy --wasmFile ./contract/nearkick.wasm --initFunction new --initArgs '{}' && npm run deploy:setenv && rm -r -f neardev"
   },
   "repository": {
     "type": "git",

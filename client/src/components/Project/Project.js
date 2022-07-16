@@ -5,12 +5,11 @@ import WalletContext from "../../store/wallet-context";
 import { getConfig } from "../../config";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
-import { useToasts } from "react-toast-notifications";
+import { toast } from "react-toastify";
 
 function Project() {
   const { id } = useParams();
 
-  const { addToast } = useToasts();
   const walletContext = useContext(WalletContext);
   const [project, setProject] = useState(null);
   const [supporterLevel, setSupporterLevel] = useState("Basic");
@@ -42,10 +41,7 @@ function Project() {
         )
         .then((res) => {
           console.log(res);
-          addToast("Successfully became a supporter on project", {
-            appearance: "success",
-            autoDismiss: true,
-          });
+          toast.success("Successfully became a supporter on project");
         });
     }
   }
@@ -65,10 +61,7 @@ function Project() {
       })
       .then((res) => {
         console.log(res);
-        addToast("Successfully removed yourself from project", {
-          appearance: "success",
-          autoDismiss: true,
-        });
+        toast.success("Successfully removed yourself from project");
       });
   }
 

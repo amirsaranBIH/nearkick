@@ -4,13 +4,12 @@ import { useParams } from "react-router-dom";
 import WalletContext from "../../../../store/wallet-context";
 import { create } from "ipfs-http-client";
 import LoadingContext from "../../../../store/loading-context";
-import { useToasts } from "react-toast-notifications";
+import { ToastContainer, toast } from "react-toastify";
 import QrReader from "react-qr-reader";
 
 function EditProject() {
   const { id } = useParams();
 
-  const { addToast } = useToasts();
   const walletContext = useContext(WalletContext);
   const loadingContext = useContext(LoadingContext);
 
@@ -85,10 +84,7 @@ function EditProject() {
         for (let i = 0; i < newlyAddedImages.length; i++) {
           await ipfs.add(newlyAddedImages[i]);
         }
-        addToast("Successfully updated project", {
-          appearance: "success",
-          autoDismiss: true,
-        });
+        toast.success("Successfully updated project");
         loadingContext.setLoading(false);
       })
       .catch((err) => {
@@ -153,10 +149,7 @@ function EditProject() {
       .cancel_project({ project_id: parseInt(id, 10) })
       .then((res) => {
         console.log(res);
-        addToast("Successfully canceled project", {
-          appearance: "success",
-          autoDismiss: true,
-        });
+        toast.success("Successfully canceled project");
       });
   }
 
@@ -269,15 +262,9 @@ function EditProject() {
         })
         .then((res) => {
           if (res) {
-            addToast(`${result} is a supporter!`, {
-              appearance: "success",
-              autoDismiss: true,
-            });
+            toast.success(`${result} is a supporter!`);
           } else {
-            addToast(`${result} is NOT a supporter!`, {
-              appearance: "error",
-              autoDismiss: true,
-            });
+            toast.success(`${result} is NOT a supporter!`);
           }
           loadingContext.setLoading(false);
         })
@@ -286,10 +273,7 @@ function EditProject() {
           if (!errorMessage) {
             errorMessage = "Failed to verify supporter";
           }
-          addToast(errorMessage, {
-            appearance: "error",
-            autoDismiss: true,
-          });
+          toast.error(errorMessage);
           loadingContext.setLoading(false);
         });
     }
@@ -546,6 +530,7 @@ function EditProject() {
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 }

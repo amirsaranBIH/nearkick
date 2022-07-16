@@ -5,7 +5,6 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { WalletContextProvider } from "./store/wallet-context";
 import { LoadingContextProvider } from "./store/loading-context";
-import { ToastProvider } from "react-toast-notifications";
 import { initWallet } from "./wallet";
 
 initWallet().then((res) => {
@@ -13,9 +12,7 @@ initWallet().then((res) => {
     <WalletContextProvider wallet={res.wallet} contract={res.contract}>
       <LoadingContextProvider>
         <React.StrictMode>
-          <ToastProvider>
-            <App />
-          </ToastProvider>
+          <App />
         </React.StrictMode>
       </LoadingContextProvider>
     </WalletContextProvider>,

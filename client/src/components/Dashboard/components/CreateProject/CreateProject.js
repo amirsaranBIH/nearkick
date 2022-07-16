@@ -4,11 +4,10 @@ import { Navigate } from "react-router-dom";
 import WalletContext from "../../../../store/wallet-context";
 import LoadingContext from "../../../../store/loading-context";
 import { create } from "ipfs-http-client";
-import { useToasts } from "react-toast-notifications";
+import { ToastContainer, toast } from "react-toastify";
 import { utils } from "near-api-js";
 
 function CreateProject() {
-  const { addToast } = useToasts();
   const walletContext = useContext(WalletContext);
   const loadingContext = useContext(LoadingContext);
   const [errors, setErrors] = useState({});
@@ -105,10 +104,7 @@ function CreateProject() {
           await ipfs.add(projectImages[i]);
         }
         setCreatedProjectId(parseInt(res, 10));
-        addToast("Successfully created project", {
-          appearance: "success",
-          autoDismiss: true,
-        });
+        toast.success("Successfully created project");
         loadingContext.setLoading(false);
       })
       .catch((err) => {
@@ -431,6 +427,7 @@ function CreateProject() {
           Create Project
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 }

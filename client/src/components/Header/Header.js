@@ -2,12 +2,11 @@ import "./Header.css";
 import { useState, useContext, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getConfig } from "../../config";
-import { useToasts } from "react-toast-notifications";
 import WalletContext from "../../store/wallet-context";
+import { ToastContainer, toast } from "react-toastify";
 
 function Header() {
   const location = useLocation();
-  const { addToast } = useToasts();
   const walletContext = useContext(WalletContext);
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -31,10 +30,7 @@ function Header() {
   function disconnectWalletHandler() {
     walletContext.wallet.signOut();
     walletContext.setIsSignedIn(false);
-    addToast("Successfully logged out of wallet", {
-      appearance: "success",
-      autoDismiss: true,
-    });
+    toast.success("Successfully logged out of wallet");
   }
 
   function toggleDropdown() {
@@ -47,6 +43,7 @@ function Header() {
 
   return (
     <header className="header">
+      <ToastContainer />
       <nav className="navigation-links">
         <ul>
           <li>

@@ -5,11 +5,23 @@ on:
     branches: [main, dev]
 
 jobs:
-  test_pull_request:
+  test_contract:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./contract
+    steps:
+      - uses: actions/checkout@v2
+      - run: cargo test
+  test_client:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: 12
-      - run: npm run contract:test
+          node-version: 16.16.0
+      - run: yarn
+      - run: yarn test

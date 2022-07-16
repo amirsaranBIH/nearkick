@@ -91,6 +91,8 @@ a {
   font-size: 0.8em;
 }
 
+@import "react-toastify/dist/ReactToastify.css";
+
 @media only screen and (max-width: 992px) {
   :root {
     --header-height: 70px;
