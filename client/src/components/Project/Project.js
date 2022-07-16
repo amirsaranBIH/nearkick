@@ -61,10 +61,7 @@ function Project() {
       })
       .then((res) => {
         console.log(res);
-        addToast("Successfully removed yourself from project", {
-          appearance: "success",
-          autoDismiss: true,
-        });
+        toast.success("Successfully removed yourself from project");
       });
   }
 

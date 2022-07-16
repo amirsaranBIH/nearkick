@@ -5,6 +5,7 @@ import WalletContext from "../../../../store/wallet-context";
 import LoadingContext from "../../../../store/loading-context";
 import { create } from "ipfs-http-client";
 import { ToastContainer, toast } from "react-toastify";
+import { utils } from "near-api-js";
 
 function CreateProject() {
   const walletContext = useContext(WalletContext);
